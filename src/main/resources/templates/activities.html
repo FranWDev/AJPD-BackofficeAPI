@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Asociación Juvenil Proyecto Dubini - Organización dedicada a la juventud" />
+  <title>Proyecto Dubini</title>
+
+  <link rel="stylesheet" href="/styles/layout/header.css" />
+  <link rel="stylesheet" href="/styles/layout/footer.css" />
+  <link rel="stylesheet" href="/styles/base.css" />
+  <link rel="stylesheet" href="/styles/login.css" />
+  <link rel="stylesheet" href="/styles/news.css" />
+</head>
+
+<body>
+  <div th:replace="fragments/header :: header"></div>
+  <main role="main">
+    <h1>📝 Editor de actividades</h1>
+
+    <div class="main-layout">
+
+      <div id="all-news"></div>
+
+      <div class="editor-section">
+        <div id="status" class="status-message"></div>
+        <div id="loading" class="loading">Cargando editor...</div>
+
+        <div id="editorjs" style="display: none"></div>
+
+        <div class="button-container" id="buttons" style="display: none">
+          <textarea id="title" placeholder="Título" rows="1"></textarea>
+          <textarea id="description" placeholder="Descripción" rows="2"></textarea>
+          <div class="image-upload-container">
+            <input type="file" id="imageFile" accept="image/*" style="display: none">
+            <button type="button" id="imageUploadBtn" class="image-select-btn">Seleccionar imagen de portada</button>
+            <div id="imagePreview" class="image-preview"></div>
+          </div>
+          <button id="save-btn">Guardar contenido</button>
+          <button id="clear-btn">Limpiar editor</button>
+        </div>
+
+        <div id="output-container" style="display: none">
+          <h2>Contenido JSON guardado</h2>
+          <pre id="output">El contenido aparecerá aquí después de guardar...</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Editor.js Core -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@2.28.2/dist/editorjs.umd.min.js"></script>
+
+    <!-- Herramientas de texto -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@2.7.0/dist/bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@2.5.0/dist/bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/warning@1.3.0/dist/bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@1.3.0/dist/bundle.min.js"></script>
+
+    <!-- Listas -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@1.8.0/dist/bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/nested-list@1.3.0/dist/nested-list.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@1.5.0/dist/bundle.min.js"></script>
+
+    <!-- Medios -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@2.8.1/dist/bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/simple-image@1.5.1/dist/bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@2.5.3/dist/bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/link@2.5.0/dist/bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/attaches@1.3.0/dist/bundle.min.js"></script>
+
+    <!-- Tablas -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/table@2.2.2/dist/table.min.js"></script>
+
+    <!-- Formato inline -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@1.3.0/dist/bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/underline@1.1.0/dist/bundle.min.js"></script>
+
+    <!-- Tablas y datos -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/table@2.2.2/dist/table.min.js"></script>
+
+    <!-- Formato inline -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@1.3.0/dist/bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/underline@1.1.0/dist/bundle.min.js"></script>
+    <script src="/scripts/script.js"></script>
+    <script src="/scripts/pages/activities.js" type="module"></script>
+  </main>
+</body>
+
+</html>

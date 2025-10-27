@@ -1,0 +1,16 @@
+{
+  "title" : "adasdqeqweqwe",
+  "description" : "asdasd",
+  "imageUrl" : "/images/2300169f-2fe7-465f-8024-eca33233c427.webp",
+  "publishedAt" : "2025-10-24T18:52:08.244201800",
+  "editorContent" : {
+    "time" : 1761331928239,
+    "blocks" : [ {
+      "type" : "paragraph",
+      "data" : {
+        "text" : "Hola esta es una noticia de prueba"
+      }
+    } ],
+    "version" : "2.28.2"
+  }
+}

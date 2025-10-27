@@ -1,0 +1,88 @@
+.login {
+  background-color: var(--color-background);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
+.login .container {
+  background: white;
+  padding: 2.5rem 3rem;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  max-width: 400px;
+  width: 100%;
+  animation: fadeIn var(--transition-normal) ease forwards;
+}
+
+.login h2 {
+  color: var(--color-primary);
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.form-control {
+  padding: 0.75rem 1rem;
+  border: 1.8px solid var(--color-blue-light);
+  border-radius: var(--border-radius-md);
+  font-size: 1rem;
+  transition: border-color var(--transition-fast);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: var(--color-primary);
+  outline-offset: 2px;
+}
+
+.form-control:focus {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 8px var(--color-secondary);
+  outline: none;
+}
+
+.btn-primary {
+  background-color: var(--color-secondary);
+  color: white;
+  font-weight: 700;
+  padding: 0.75rem 1.2rem;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+  width: 100%;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+  outline: none;
+}
+
+@media (max-width: 480px) {
+  .login .container {
+    padding: 2rem 1.5rem;
+    border-radius: var(--border-radius-md);
+  }
+
+  .login h2 {
+    font-size: 1.5rem;
+  }
+}

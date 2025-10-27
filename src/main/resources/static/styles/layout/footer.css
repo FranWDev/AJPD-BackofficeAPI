@@ -1,0 +1,81 @@
+/* Footer */
+.main-footer {
+  position: relative;
+  background: linear-gradient(rgba(16, 35, 78, 0.95), rgba(16, 35, 78, 0.95)),
+    url("/assets/navmenu.png");
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 3rem 1rem;
+  margin-top: auto;
+  z-index: 2;
+}
+
+/* Añadir el efecto blur */
+.main-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+  box-shadow: 0 -20px 20px -20px rgba(16, 35, 78, 0.4);
+}
+
+/* Asegurar que el contenido esté por encima del blur */
+.footer-container {
+  position: relative;
+  z-index: 3;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  gap: 2rem;
+}
+
+.footer-section h2 {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-links a {
+  color: white;
+  font-size: 1.5rem;
+  transition: color var(--transition-speed) var(--transition-timing);
+}
+
+.social-links a:hover {
+  color: var(--color-accent);
+}
+
+.google-map {
+  width: 100%;
+  height: 200px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.legal-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.legal-links a {
+  color: white;
+  text-decoration: none;
+  transition: color var(--transition-speed) var(--transition-timing);
+}
+
+.legal-links a:hover {
+  color: var(--color-accent);
+}

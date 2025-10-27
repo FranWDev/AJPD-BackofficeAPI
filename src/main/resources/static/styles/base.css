@@ -1,0 +1,126 @@
+:root {
+  --color-primary: #10234e;
+  --color-secondary: #ca4353;
+  --color-accent: #fa9336;
+  --color-background: #e5e0e2;
+  --color-blue-light: #7db3c6;
+  --color-pink: #af7084;
+  --color-peach: #f7b487;
+  --color-blue-medium: #4462aa;
+  --color-blue-sky: #54a4bc;
+  --border-radius-sm: 8px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 20px;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --transition-fast: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  backdrop-filter: blur(10px);
+  background-image: url('/assets/background.png');
+  background-size: cover;
+  background-position: center;
+  background-color: var(--color-background);
+  color: var(--color-primary);
+  overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 768px) {
+  .slide img {
+    aspect-ratio: 1/1;
+  }
+}
+
+@media (max-width: 768px) {
+  .whatsapp-float {
+    width: 50px;
+    height: 50px;
+    font-size: 1.75rem;
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-container {
+    flex-direction: row-reverse;
+  }
+  .logo-container h1 {
+    margin-right: 2rem;
+  }
+  .legal-links {
+    flex-direction: column;
+    align-items: center;
+  }
+  .footer-container {
+    justify-content: center;
+    justify-items: center;
+    padding-bottom: 1rem;
+  }
+  .footer-section {
+    text-align: center;
+  }
+
+  .main-footer {
+    padding: 1rem 1rem;
+  }
+  .container {
+    padding: 2rem 1rem;
+  }
+
+  .featured-section,
+  .impact-section,
+  .testimonials {
+    padding: 2rem 0;
+  }
+
+  .hero {
+    min-height: 100vh;
+  }
+  .footer-section.location.animate-fadeIn {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .mobile-menu-btn {
+    display: none;
+  }
+
+  .desktop-nav {
+    display: block;
+  }
+
+  .footer-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn var(--transition-speed) var(--transition-timing);
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Asociación Juvenil Proyecto Dubini - Organización dedicada a la juventud">
+    <title>Dubini backoffice</title>
+
+    <link rel="stylesheet" href="/styles/layout/header.css">
+    <link rel="stylesheet" href="/styles/layout/footer.css">
+    <link rel="stylesheet" href="/styles/components/hero.css">
+    <link rel="stylesheet" href="/styles/components/cards.css">
+    <link rel="stylesheet" href="/styles/components/content.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles/base.css">
+</head>
+
+<body>
+    <header th:replace="fragments/header :: header"></header>
+    <main role="main">
+        <section class="hero">
+            <div class="hero-slider">
+                <div class="hero-slide" style="background-image: url('assets/example3.png')"></div>
+                <div class="hero-slide" style="background-image: url('assets/example3.png')"></div>
+                <div class="hero-slide" style="background-image: url('assets/example3.png')"></div>
+            </div>
+            <div class="hero-content">
+                <h2>Oficina de Proyecto Dubini</h2>
+                <p>Gestiona noticias, actividades y premios</p>
+                <a href=""
+                    class="cta-button">Volver a la web principal</a>
+            </div>
+        </section>
+    </main>
+</body>
+<script src="/scripts/script.js"></script>
+
+</html>
