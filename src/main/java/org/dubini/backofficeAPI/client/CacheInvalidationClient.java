@@ -19,7 +19,7 @@ public class CacheInvalidationClient {
         String jwt = jwtProvider.generateToken();
 
         return webClient.get()
-                .uri("http://localhost:8080/api/cache/news/clear")
+                .uri("http://localhost:8081/api/cache/news/clear")
                 .cookie("jwt", jwt)
                 .retrieve()
                 .onStatus(HttpStatusCode::is5xxServerError,
@@ -33,7 +33,7 @@ public class CacheInvalidationClient {
         String jwt = jwtProvider.generateToken();
 
         return webClient.get()
-                .uri("http://localhost:8080/api/cache/activities/clear")
+                .uri("http://localhost:8081/api/cache/activities/clear")
                 .cookie("jwt", jwt)
                 .retrieve()
                 .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> {
