@@ -1,0 +1,16 @@
+{
+  "title" : "Publicacion 5",
+  "description" : "Descripcion 5",
+  "imageUrl" : "/images/31b00b70-6f4f-49a6-9045-dee7d9368494.webp",
+  "publishedAt" : "2025-10-28T23:40:58.449803200",
+  "editorContent" : {
+    "time" : 1761694858438,
+    "blocks" : [ {
+      "type" : "paragraph",
+      "data" : {
+        "text" : "Publicacion de prueba"
+      }
+    } ],
+    "version" : "2.28.2"
+  }
+}
