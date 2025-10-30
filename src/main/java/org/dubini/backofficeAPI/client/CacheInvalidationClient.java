@@ -16,7 +16,7 @@ public class CacheInvalidationClient {
     private final WebClient webClient;
 
     public Mono<HttpResponse> invalidateNewsCache() {
-        String jwt = jwtProvider.generateToken();
+        String jwt = jwtProvider.generateShortLivedToken();
 
         return webClient.get()
                 .uri("http://localhost:8081/api/cache/news/clear")
@@ -30,7 +30,7 @@ public class CacheInvalidationClient {
     }
 
     public Mono<HttpResponse> invalidateActivitiesCache() {
-        String jwt = jwtProvider.generateToken();
+        String jwt = jwtProvider.generateShortLivedToken();
 
         return webClient.get()
                 .uri("http://localhost:8081/api/cache/activities/clear")
@@ -42,6 +42,20 @@ public class CacheInvalidationClient {
                 .bodyToMono(HttpResponse.class)
                 .doOnSuccess(resp -> System.out.println("Activities cache invalidated"))
                 .doOnError(err -> System.err.println("Error invalidating activities cache: " + err.getMessage()));
+    }
+
+    public Mono<HttpResponse> invalidateFeaturedCache() {
+        String jwt = jwtProvider.generateShortLivedToken();
+        return webClient.get()
+                .uri("http://localhost:8081/api/cache/feature/clear")
+                .cookie("jwt", jwt)
+                .retrieve()
+                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> {
+                    return Mono.error(new RuntimeException("Error del servidor al invalidar la cache de destacados"));
+                })
+                .bodyToMono(HttpResponse.class)
+                .doOnSuccess(resp -> System.out.println("featured cache invalidated"))
+                .doOnError(err -> System.out.println("Error invalidating featured cache"));
     }
     
 /*

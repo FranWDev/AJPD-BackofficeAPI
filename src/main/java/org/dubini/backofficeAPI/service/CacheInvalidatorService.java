@@ -33,4 +33,13 @@ public class CacheInvalidatorService {
                 });
     }
 
+    public Mono<HttpResponse> invalidateFeaturedCache() {
+        return cacheInvalidation.invalidateFeaturedCache()
+                .map(resp -> new HttpResponse("Featured cache invalidated"))
+                .onErrorResume(err -> {
+                     log.error("Error invalidating featured cache", err);
+                return Mono.just(new HttpResponse("Error invalidating featured cache"));
+            });
+    }
+
 }

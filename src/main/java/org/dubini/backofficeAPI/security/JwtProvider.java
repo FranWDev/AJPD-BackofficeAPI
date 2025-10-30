@@ -29,6 +29,22 @@ public class JwtProvider {
         return token;
     }
 
+    public String generateShortLivedToken() {
+        long shortLivedExpiration = 30_000L;
+        String token = Jwts.builder()
+                .setSubject("backoffice")
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + shortLivedExpiration))
+                .signWith(key)
+                .compact();
+        
+        System.out.println("=== SHORT-LIVED TOKEN GENERATED ===");
+        System.out.println("Token: " + token);
+        System.out.println("Expiration: " + new Date(System.currentTimeMillis() + shortLivedExpiration));
+        
+        return token;
+    }
+
     public boolean validateToken(String token) {
         try {
             System.out.println("--- Token Validation Start ---");

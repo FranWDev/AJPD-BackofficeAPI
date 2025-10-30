@@ -22,14 +22,14 @@ public class NewsController {
     private final NewsService newsService;
 
     @GetMapping
-    public ResponseEntity<List<PublicationDTO>> getAllNews() {
+    public ResponseEntity<List<PublicationDTO>> get() {
         log.debug("GET request to retrieve all news");
         List<PublicationDTO> newsList = newsService.get();
         return ResponseEntity.ok(newsList);
     }
 
     @GetMapping("/{identifier}")
-    public ResponseEntity<PublicationDTO> getNewsByIdentifier(@PathVariable String identifier) {
+    public ResponseEntity<PublicationDTO> get(@PathVariable String identifier) {
         log.debug("GET request to retrieve news with identifier: {}", identifier);
         return newsService.get(identifier)
                 .map(ResponseEntity::ok)
@@ -37,7 +37,7 @@ public class NewsController {
     }
 
     @PostMapping
-    public ResponseEntity<HttpResponse> createNews(@Valid @RequestBody PublicationDTO publicationDTO) {
+    public ResponseEntity<HttpResponse> create(@Valid @RequestBody PublicationDTO publicationDTO) {
         log.debug("POST request to create new news article");
         newsService.save(publicationDTO);
         return ResponseEntity
@@ -46,7 +46,7 @@ public class NewsController {
     }
 
     @DeleteMapping("/{identifier}")
-    public ResponseEntity<HttpResponse> deleteNews(@PathVariable String identifier) {
+    public ResponseEntity<HttpResponse> delete(@PathVariable String identifier) {
         log.debug("DELETE request to delete news with identifier: {}", identifier);
         newsService.delete(identifier);
         return ResponseEntity.ok(new HttpResponse("Noticia eliminada correctamente"));
