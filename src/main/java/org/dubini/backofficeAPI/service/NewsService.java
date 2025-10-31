@@ -17,7 +17,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,7 +32,7 @@ public class NewsService {
 
     private static final String JSON_EXTENSION = ".json";
     private static final String SAFE_FILENAME_PATTERN = "[^a-zA-Z0-9-_]";
-
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     private final ObjectMapper objectMapper;
     private final CacheInvalidatorService cacheInvalidation;
 
@@ -69,8 +72,12 @@ public class NewsService {
         try {
             List<PublicationDTO> publications = Files.list(directory)
                     .filter(path -> path.toString().endsWith(JSON_EXTENSION))
-                    .map(this::readPublicationFromFile)
-                    .filter(pub -> pub != null)
+                    .map(path -> (PublicationDTO) this.readPublicationFromFile(path))
+                    .filter(pub -> pub != null && pub.getPublishedAt() != null)
+                    .sorted(Comparator.comparing(
+                            PublicationDTO::getPublishedAtDateTime,
+                            Comparator.nullsLast(Comparator.reverseOrder())
+                    ))
                     .collect(Collectors.toList());
 
             log.debug("Retrieved {} news articles", publications.size());

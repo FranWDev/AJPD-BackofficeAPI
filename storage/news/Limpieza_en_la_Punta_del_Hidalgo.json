@@ -1,0 +1,41 @@
+{
+  "title" : "Limpieza en la Punta del Hidalgo",
+  "description" : "Proyecto Dubini, un reto medioambiental intercentros",
+  "imageUrl" : "https://uploaded.photo/2025/10/31/b6d2d6835767ff6cff721271615bd306.webp",
+  "publishedAt" : "2025-1-31T08:48:42.666566200",
+  "editorContent" : {
+    "time" : 1761900522501,
+    "blocks" : [ {
+      "type" : "paragraph",
+      "data" : {
+        "text" : "Esta semana hemos realizado, por \nprimera vez en los tres cursos que llevamos desde que comenzó a andar el\n Proyecto Dubini, un reto medioambiental intercentros de manera \npresencial. Un total de 60 jóvenes estudiantes del IES San Benito y del \nColegio Salesiano San Juan Bosco de Tenerife hemos unido nuestras \nfuerzas para realizar una limpieza de residuos por la costa de la Punta \ndel Hidalgo (La Laguna)."
+      }
+    }, {
+      "type" : "paragraph",
+      "data" : {
+        "text" : "La actividad la realizamos en transporte público (TITSA), cada uno \npor su lado, juntándonos de forma coordinada en la guagua. Al llegar al \npunto de encuentro, nos acogió Betsabé, responsable de la Oficina de \nParticipación y el Voluntariado Ambientales del Cabildo de Tenerife, \nquien dirigió una dinámica para romper el hielo y favorecer que el \nalumnado de diferentes centros se conociera."
+      }
+    }, {
+      "type" : "paragraph",
+      "data" : {
+        "text" : "Además, contamos con la presencia y apoyo de los concejales de \nEducación y Medioambiente del Ayuntamiento de San Cristóbal de La \nLaguna, Sergio Eiroa y Domingo Galván, quienes felicitaron la iniciativa\n y alentaron a los participantes a seguir adelante con los retos \nclimáticos del Proyecto Dubini."
+      }
+    }, {
+      "type" : "paragraph",
+      "data" : {
+        "text" : "Posteriormente, se formaron cuadrillas de 10 componentes, mezclando \nalumnado y profesorado de ambos centros, se repartieron bolsas de \ncolores para la recogida selectiva de residuos y comenzamos la limpieza \npor el litoral, que se prolongó durante más de una hora. Tras dejar en \nlos respectivos contenedores una gran cantidad de basura recogida, \nconcluimos la actividad con el desayuno y un agradable y merecido baño \nen el mar, para terminar volviendo en guagua a nuestros centros \neducativos."
+      }
+    }, {
+      "type" : "paragraph",
+      "data" : {
+        "text" : "Sin duda, un día inolvidable de retos climáticos compartidos, que \ntuvo un gran valor y significado para nuestro Proyecto Dubini. Partiendo\n de las Matemáticas, seguimos uniendo fuerzas por el cuidado de nuestro \nplaneta alentados por la Dra. Alexandra Dubini."
+      }
+    }, {
+      "type" : "paragraph",
+      "data" : {
+        "text" : "#NiUnPasoAtrás"
+      }
+    } ],
+    "version" : "2.28.2"
+  }
+}

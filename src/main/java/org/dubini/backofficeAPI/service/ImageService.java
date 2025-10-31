@@ -43,7 +43,7 @@ public class ImageService {
     public ImageResponseDTO saveImage(MultipartFile file, int width, int height, float quality) throws IOException {
         log.debug("Procesando imagen antes de subir a UploadMe: {}", file.getOriginalFilename());
 
-        // 🖼️ Redimensionar
+        // 🖼️ Redimensionar y convertir a webp
         BufferedImage originalImage = ImageIO.read(new ByteArrayInputStream(file.getBytes()));
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
@@ -55,7 +55,7 @@ public class ImageService {
 
         byte[] processedImage = outputStream.toByteArray();
 
-        // 🧾 Cuerpo multipart: UploadMe espera "source" (no "image")
+        // 🧾 Cuerpo multipart: UploadMe espera "source"
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("source", new ByteArrayResource(processedImage) {
             @Override
@@ -83,34 +83,35 @@ public class ImageService {
                     })
                     .block();
 
-            if (response == null) {
-                throw new IOException("Respuesta nula de UploadMe");
+            if (response == null || response.getBody() == null) {
+                throw new IOException("Respuesta nula o vacía de UploadMe");
             }
 
-            log.info("📡 UploadMe HTTP {} - Headers: {}", response.getStatusCode(), response.getHeaders());
             String responseBody = response.getBody();
             log.info("📦 UploadMe respuesta: {}", responseBody);
 
-            if (responseBody == null || responseBody.isBlank()) {
-                throw new IOException("UploadMe devolvió respuesta vacía o nula");
-            }
-
             JSONObject json = new JSONObject(responseBody);
-            String imageUrl = json.optString("image", json.optString("URL", null));
 
-            if (imageUrl == null || imageUrl.isEmpty()) {
-                log.error("UploadMe no devolvió URL válida: {}", json);
-                throw new IOException("No se recibió URL válida desde UploadMe");
+            // ✅ Leer el subobjeto "image"
+            JSONObject imageObject = json.optJSONObject("image");
+            if (imageObject == null) {
+                log.error("UploadMe no devolvió un objeto 'image': {}", json);
+                throw new IOException("No se recibió objeto 'image' válido desde UploadMe");
             }
 
-            String fileName = file.getOriginalFilename();
-            long fileSize = processedImage.length;
+            String imageUrl = imageObject.optString("url", null);
+            String fileName = imageObject.optString("filename", file.getOriginalFilename());
+            long fileSize = imageObject.optLong("size", processedImage.length);
 
-            log.info("✅ Imagen subida correctamente: {}", imageUrl);
+            if (imageUrl == null || imageUrl.isBlank()) {
+                throw new IOException("UploadMe no devolvió una URL válida");
+            }
+
+            log.info("Imagen subida correctamente: {}", imageUrl);
             return new ImageResponseDTO(fileName, imageUrl, fileSize);
 
         } catch (Exception e) {
-            log.error("❌ Falló la subida a UploadMe: {}", e.getMessage(), e);
+            log.error("Falló la subida a UploadMe: {}", e.getMessage(), e);
             throw new IOException("Error al subir la imagen a UploadMe", e);
         }
     }

@@ -1,0 +1,68 @@
+{
+  "title" : "Programa Mares Circulares",
+  "description" : "25 estudiantes del IES San Benito participaron en el programa “Mares Circulares”.",
+  "imageUrl" : "https://uploaded.photo/2025/10/31/9433291be94f6f58bd2a04058ca24e84.webp",
+  "publishedAt" : "2025-3-31T08:57:15.508169700",
+  "editorContent" : {
+    "time" : 1761901035460,
+    "blocks" : [ {
+      "type" : "image",
+      "data" : {
+        "file" : {
+          "url" : "https://uploaded.photo/2025/10/31/fccd156412281f710917bf485970641b.webp",
+          "name" : "fccd156412281f710917bf485970641b.webp",
+          "size" : 37510
+        },
+        "caption" : "",
+        "withBorder" : false,
+        "stretched" : false,
+        "withBackground" : false
+      }
+    }, {
+      "type" : "image",
+      "data" : {
+        "file" : {
+          "url" : "https://uploaded.photo/2025/10/31/753d2eaea37643a2452e0c92c68b13b2.webp",
+          "name" : "753d2eaea37643a2452e0c92c68b13b2.webp",
+          "size" : 51800
+        },
+        "caption" : "",
+        "withBorder" : false,
+        "stretched" : false,
+        "withBackground" : false
+      }
+    }, {
+      "type" : "image",
+      "data" : {
+        "file" : {
+          "url" : "https://uploaded.photo/2025/10/31/6bb43919cfbba9c5a5587794c4d7f1fa.webp",
+          "name" : "6bb43919cfbba9c5a5587794c4d7f1fa.webp",
+          "size" : 34952
+        },
+        "caption" : "",
+        "withBorder" : false,
+        "stretched" : false,
+        "withBackground" : false
+      }
+    }, {
+      "type" : "image",
+      "data" : {
+        "file" : {
+          "url" : "https://uploaded.photo/2025/10/31/119931e2b302a8d4f1db0610d0ebccc6.webp",
+          "name" : "119931e2b302a8d4f1db0610d0ebccc6.webp",
+          "size" : 47848
+        },
+        "caption" : "",
+        "withBorder" : false,
+        "stretched" : false,
+        "withBackground" : false
+      }
+    }, {
+      "type" : "paragraph",
+      "data" : {
+        "text" : "25 estudiantes del IES San Benito participaron en el programa “Mares Circulares” junto a otros colectivos como parte de las iniciativas de Aprendizaje. Colaboraron en la incorporación de una tortuga a su hábitat natural y la limpieza de residuos en la Playa de Abades (Tenerife)"
+      }
+    } ],
+    "version" : "2.28.2"
+  }
+}
