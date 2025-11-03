@@ -13,13 +13,9 @@ public class EditorController {
         return "editor";
     }
 
-    @GetMapping("/noticias")
+    @GetMapping("/noticias-y-actividades")
     public String news() {
         return "news";
     }
 
-    @GetMapping("/actividades")
-    public String activities() {
-        return "activities";
-    }
 }

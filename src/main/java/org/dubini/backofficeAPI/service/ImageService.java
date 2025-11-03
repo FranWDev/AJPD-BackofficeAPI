@@ -43,7 +43,7 @@ public class ImageService {
     public ImageResponseDTO saveImage(MultipartFile file, int width, int height, float quality) throws IOException {
         log.debug("Procesando imagen antes de subir a UploadMe: {}", file.getOriginalFilename());
 
-        // 🖼️ Redimensionar y convertir a webp
+        // Redimensionar y convertir a webp
         BufferedImage originalImage = ImageIO.read(new ByteArrayInputStream(file.getBytes()));
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
@@ -55,7 +55,7 @@ public class ImageService {
 
         byte[] processedImage = outputStream.toByteArray();
 
-        // 🧾 Cuerpo multipart: UploadMe espera "source"
+        // Cuerpo multipart: UploadMe espera "source"
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("source", new ByteArrayResource(processedImage) {
             @Override
@@ -92,7 +92,7 @@ public class ImageService {
 
             JSONObject json = new JSONObject(responseBody);
 
-            // ✅ Leer el subobjeto "image"
+            // Leer el subobjeto "image"
             JSONObject imageObject = json.optJSONObject("image");
             if (imageObject == null) {
                 log.error("UploadMe no devolvió un objeto 'image': {}", json);

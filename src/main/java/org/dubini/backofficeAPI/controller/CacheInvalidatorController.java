@@ -20,9 +20,9 @@ public class CacheInvalidatorController {
     public Mono<HttpResponse> invalidateNewsCache() {
         return cacheInvalidatorService.invalidateNewsCache();
     }
-
+/* 
     @GetMapping("/invalidate/activities")
     public Mono<HttpResponse> invalidateActivitiesCache() {
         return cacheInvalidatorService.invalidateActivitiesCache();
-    }
+    }*/
 }
