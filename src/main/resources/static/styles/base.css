@@ -124,3 +124,31 @@ body {
 .animate-fadeIn {
   animation: fadeIn var(--transition-speed) var(--transition-timing);
 }
+
+.cta-button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius-sm);
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  text-decoration: none;
+}
+.cta-button:hover {
+  background-color: var(--color-secondary);
+}
+.cta-button:active {
+  background-color: var(--color-accent);
+}
+.cta-button:focus {
+  outline: none;
+}
+.cta-button:disabled {
+  background-color: var(--color-secondary);
+  color: var(--color-background);
+  cursor: not-allowed;
+}
+.cache-response {
+  margin-top: 10px;
+  font-size: 14px;
+  color: white;
+}

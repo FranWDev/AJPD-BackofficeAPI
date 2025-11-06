@@ -29,35 +29,19 @@ public class CacheInvalidationClient {
                 .doOnError(err -> System.err.println("Error invalidating news cache: " + err.getMessage()));
     }
 
-    public Mono<HttpResponse> invalidateActivitiesCache() {
+    public Mono<HttpResponse> invalidateServiceWorkersCache() {
         String jwt = jwtProvider.generateShortLivedToken();
 
-        return webClient.get()
-                .uri("http://localhost:8081/api/cache/activities/clear")
+        return webClient.post()
+                .uri("http://localhost:8081/api/service-workers/update")
                 .cookie("jwt", jwt)
                 .retrieve()
-                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> {
-                    return Mono.error(new RuntimeException("Error del servidor al invalidar la caché de actividades"));
-                })
+                .onStatus(HttpStatusCode::is5xxServerError,
+                        response -> Mono.error(new RuntimeException("Error del servidor al invalidar la caché de los service workers")))
                 .bodyToMono(HttpResponse.class)
-                .doOnSuccess(resp -> System.out.println("Activities cache invalidated"))
-                .doOnError(err -> System.err.println("Error invalidating activities cache: " + err.getMessage()));
+                .doOnSuccess(resp -> System.out.println("Service workers cache invalidated"))
+                .doOnError(err -> System.err.println("Error invalidating service workers cache: " + err.getMessage()));
     }
-
-    public Mono<HttpResponse> invalidateFeaturedCache() {
-        String jwt = jwtProvider.generateShortLivedToken();
-        return webClient.get()
-                .uri("http://localhost:8081/api/cache/feature/clear")
-                .cookie("jwt", jwt)
-                .retrieve()
-                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> {
-                    return Mono.error(new RuntimeException("Error del servidor al invalidar la cache de destacados"));
-                })
-                .bodyToMono(HttpResponse.class)
-                .doOnSuccess(resp -> System.out.println("featured cache invalidated"))
-                .doOnError(err -> System.out.println("Error invalidating featured cache"));
-    }
-    
 /*
     public Mono<HttpResponse> invalidateHeroSliderCache() {
         String jwt = jwtProvider.generateToken();

@@ -11,14 +11,19 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/cache")
+@RequestMapping("/api/cache")
 public class CacheInvalidatorController {
 
     private final CacheInvalidatorService cacheInvalidatorService;
 
     @GetMapping("/invalidate/news")
-    public Mono<HttpResponse> invalidateNewsCache() {
-        return cacheInvalidatorService.invalidateNewsCache();
+    public HttpResponse invalidateNewsCache() {
+        return cacheInvalidatorService.invalidateNewsCache().block();
+    }
+
+    @GetMapping("/invalidate/service-workers")
+    public HttpResponse invalidateServiceWorkersCache() {
+        return cacheInvalidatorService.invalidateServiceWorkersCache().block();
     }
 /* 
     @GetMapping("/invalidate/activities")
