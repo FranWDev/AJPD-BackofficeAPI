@@ -21,15 +21,15 @@ public class CacheInvalidationClient {
             WebClient.Builder webClientBuilder, FrontendApiUrlProperties frontendApiUrlProperties) {
         this.jwtProvider = jwtProvider;
         this.frontendApiUrlProperties = frontendApiUrlProperties;
-        this.webClient = webClientBuilder.build();
+        String baseUrl = frontendApiUrlProperties.getUrl();
+        this.webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
     public Mono<HttpResponse> invalidateNewsCache() {
         String jwt = jwtProvider.generateShortLivedToken();
-        String url = frontendApiUrlProperties.getUrl() + "/api/cache/news/clear";
 
         return webClient.get()
-                .uri(url)
+                .uri("/api/cache/news/clear")
                 .cookie("jwt", jwt)
                 .retrieve()
                 .onStatus(HttpStatusCode::is5xxServerError,
@@ -42,10 +42,9 @@ public class CacheInvalidationClient {
 
     public Mono<HttpResponse> invalidateServiceWorkersCache() {
         String jwt = jwtProvider.generateShortLivedToken();
-        String url = frontendApiUrlProperties.getUrl() + "/api/service-workers/update";
 
         return webClient.post()
-                .uri(url)
+                .uri("/api/service-workers/update")
                 .cookie("jwt", jwt)
                 .retrieve()
                 .onStatus(HttpStatusCode::is5xxServerError,
