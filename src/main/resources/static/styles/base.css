@@ -29,7 +29,6 @@ body {
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
   line-height: 1.6;
   backdrop-filter: blur(10px);
-  background-image: url('/assets/background.png');
   background-size: cover;
   background-position: center;
   background-color: var(--color-background);
