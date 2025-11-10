@@ -48,7 +48,7 @@ async function initEditor(post) {
     editor = new EditorJS({
       holder: "editorjs",
       autofocus: true,
-      placeholder: "Escribe tu publicación aquí...",
+      placeholder: "Escribe la publicación aquí...",
 
       tools: {
         header: {
