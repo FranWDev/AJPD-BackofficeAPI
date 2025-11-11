@@ -16,7 +16,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    
+
     private final JwtFilter jwtFilter;
 
     public SecurityConfig(JwtFilter jwtFilter) {
@@ -28,31 +28,33 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         System.out.println("=== Configuring Security Filter Chain ===");
-        
+
         SecurityFilterChain chain = http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
                     System.out.println("Configuring authorization rules:");
                     System.out.println("- Public: /, /login, /error");
-                    System.out.println("- Public static: /styles/**, /scripts/**, /assets/**, /images/**, /img/**, /favicon.ico, /webjars/**");
+                    System.out.println(
+                            "- Public static: /styles/**, /scripts/**, /assets/**, /images/**, /img/**, /favicon.ico, /webjars/**");
                     System.out.println("- Public POST: /api/auth/login");
                     System.out.println("- All other requests: AUTHENTICATED");
-                    
+
                     auth
-                        .requestMatchers("/", "/login", "/error").permitAll()
+                            .requestMatchers("/", "/login", "/error").permitAll()
 
-                        .requestMatchers("/styles/**", "/scripts/**", "/assets/**", 
-                                       "/images/**", "/img/**", "/favicon.ico", 
-                                       "/webjars/**", "/static/**", "/css/**", "/js/**").permitAll()
+                            .requestMatchers("/styles/**", "/scripts/**", "/assets/**",
+                                    "/images/**", "/img/**", "/favicon.ico",
+                                    "/webjars/**", "/static/**", "/css/**", "/js/**")
+                            .permitAll()
 
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
 
-                        .anyRequest().authenticated();
+                            .anyRequest().authenticated();
                 })
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-        
+
         System.out.println("=== Security Filter Chain configured successfully ===");
         return chain;
     }

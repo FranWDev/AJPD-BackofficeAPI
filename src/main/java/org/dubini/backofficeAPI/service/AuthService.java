@@ -14,7 +14,8 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final AccessKeyProperties accessKeyProperties;
 
-    public AuthService(PasswordEncoder passwordEncoder, JwtProvider jwtProvider, AccessKeyProperties accessKeyProperties) {
+    public AuthService(PasswordEncoder passwordEncoder, JwtProvider jwtProvider,
+            AccessKeyProperties accessKeyProperties) {
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
         this.accessKeyProperties = accessKeyProperties;
@@ -28,7 +29,6 @@ public class AuthService {
     }
 
     public String refreshToken(String jwtToken) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'refreshToken'");
     }
 }

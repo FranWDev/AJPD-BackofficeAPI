@@ -7,10 +7,9 @@ import java.util.List;
 
 @Repository
 public interface NewsRepository extends JpaRepository<News, String> {
-    
+
     List<News> findByTitle(String title);
-    
+
     List<News> findAllByOrderByCreatedAtDesc();
 
-    
 }

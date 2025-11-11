@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,9 +24,10 @@ public class CacheInvalidatorController {
     public HttpResponse invalidateServiceWorkersCache() {
         return cacheInvalidatorService.invalidateServiceWorkersCache().block();
     }
-/* 
-    @GetMapping("/invalidate/activities")
-    public Mono<HttpResponse> invalidateActivitiesCache() {
-        return cacheInvalidatorService.invalidateActivitiesCache();
-    }*/
+    /*
+     * @GetMapping("/invalidate/activities")
+     * public Mono<HttpResponse> invalidateActivitiesCache() {
+     * return cacheInvalidatorService.invalidateActivitiesCache();
+     * }
+     */
 }

@@ -28,11 +28,11 @@ public class AuthController {
     public ResponseEntity<JwtResponse> refreshToken(
             @CookieValue(value = "jwt", required = false) String token,
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
-        
+
         log.debug("Token refresh request received");
-        
+
         String jwtToken = extractToken(token, authHeader);
-        
+
         if (jwtToken == null || jwtToken.isEmpty()) {
             log.warn("Refresh attempt without valid token");
             return ResponseEntity
@@ -48,11 +48,11 @@ public class AuthController {
         if (cookieToken != null && !cookieToken.isEmpty()) {
             return cookieToken;
         }
-        
+
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
         }
-        
+
         return null;
     }
 }

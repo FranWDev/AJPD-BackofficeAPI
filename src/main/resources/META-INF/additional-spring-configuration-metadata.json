@@ -1,0 +1,49 @@
+{
+  "properties": [
+    {
+      "name": "security.access.key-hash",
+      "type": "java.lang.String",
+      "description": "Hash de la clave de acceso'"
+    },
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "Secreto para la firma de JWT"
+    },
+    {
+      "name": "app.backoffice.password",
+      "type": "java.lang.String",
+      "description": "Contraseña para el backoffice (desarrollo)"
+    },
+    {
+      "name": "frontend.api.url",
+      "type": "java.lang.String",
+      "description": "Url de la API de frontend"
+    },
+    {
+      "name": "uploadme.api-key",
+      "type": "java.lang.String",
+      "description": "Clave API para UploadMe"
+    },
+    {
+      "name": "uploadme.base-url",
+      "type": "java.lang.String",
+      "description": "Url de la API de imagenes'"
+    },
+    {
+      "name": "management.info.env.enabled",
+      "type": "java.lang.String",
+      "description": "Endpoint de actuator'"
+    },
+    {
+      "name": "management.endpoint.health.show-details",
+      "type": "java.lang.String",
+      "description": "Endpoint de actuator'"
+    },
+    {
+      "name": "management.endpoints.web.exposure.include",
+      "type": "java.lang.String",
+      "description": "Endpoint de actuator'"
+    }
+  ]
+}

@@ -1,40 +1,37 @@
-/* Footer */
 .main-footer {
   position: relative;
+  z-index: 2;
+  margin-top: auto;
   background: linear-gradient(rgba(16, 35, 78, 0.95), rgba(16, 35, 78, 0.95)),
     url("/assets/navmenu.png");
-  background-size: cover;
   background-position: center;
-  color: white;
+  background-size: cover;
   padding: 3rem 1rem;
-  margin-top: auto;
-  z-index: 2;
+  color: white;
 }
 
-/* Añadir el efecto blur */
 .main-footer::before {
-  content: "";
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  opacity: 0.8;
+  z-index: 1;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  z-index: 1;
-  opacity: 0.8;
   transition: opacity 0.3s ease;
   box-shadow: 0 -20px 20px -20px rgba(16, 35, 78, 0.4);
+  width: 100%;
+  height: 100%;
+  content: "";
 }
 
-/* Asegurar que el contenido esté por encima del blur */
 .footer-container {
-  position: relative;
-  z-index: 3;
-  max-width: 1200px;
-  margin: 0 auto;
   display: grid;
+  position: relative;
   gap: 2rem;
+  z-index: 3;
+  margin: 0 auto;
+  max-width: 1200px;
 }
 
 .footer-section h2 {
@@ -48,9 +45,9 @@
 }
 
 .social-links a {
+  transition: color var(--transition-speed) var(--transition-timing);
   color: white;
   font-size: 1.5rem;
-  transition: color var(--transition-speed) var(--transition-timing);
 }
 
 .social-links a:hover {
@@ -58,10 +55,10 @@
 }
 
 .google-map {
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
   width: 100%;
   height: 200px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
 }
 
 .legal-links {
@@ -71,9 +68,9 @@
 }
 
 .legal-links a {
+  transition: color var(--transition-speed) var(--transition-timing);
   color: white;
   text-decoration: none;
-  transition: color var(--transition-speed) var(--transition-timing);
 }
 
 .legal-links a:hover {

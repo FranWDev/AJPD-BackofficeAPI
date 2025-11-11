@@ -20,23 +20,23 @@
 }
 
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 body {
-  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-  line-height: 1.6;
-  backdrop-filter: blur(10px);
-  background-size: cover;
-  background-position: center;
-  background-color: var(--color-background);
-  color: var(--color-primary);
-  overflow-x: hidden;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  backdrop-filter: blur(10px);
+  background-position: center;
+  background-size: cover;
+  background-color: var(--color-background);
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: var(--color-primary);
+  line-height: 1.6;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 @media (max-width: 768px) {
   .slide img {
@@ -46,11 +46,11 @@ body {
 
 @media (max-width: 768px) {
   .whatsapp-float {
+    right: 20px;
+    bottom: 20px;
     width: 50px;
     height: 50px;
     font-size: 1.75rem;
-    bottom: 20px;
-    right: 20px;
   }
 }
 
@@ -111,12 +111,12 @@ body {
 
 @keyframes fadeIn {
   from {
-    opacity: 0;
     transform: translateY(10px);
+    opacity: 0;
   }
   to {
-    opacity: 1;
     transform: translateY(0);
+    opacity: 1;
   }
 }
 
@@ -126,9 +126,9 @@ body {
 
 .cta-button {
   display: inline-block;
-  padding: 0.75rem 1.5rem;
   border-radius: var(--border-radius-sm);
   background-color: var(--color-primary);
+  padding: 0.75rem 1.5rem;
   color: var(--color-background);
   text-decoration: none;
 }
@@ -142,12 +142,12 @@ body {
   outline: none;
 }
 .cta-button:disabled {
+  cursor: not-allowed;
   background-color: var(--color-secondary);
   color: var(--color-background);
-  cursor: not-allowed;
 }
 .cache-response {
   margin-top: 10px;
-  font-size: 14px;
   color: white;
+  font-size: 14px;
 }

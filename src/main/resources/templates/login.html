@@ -1,37 +1,38 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Asociación Juvenil Proyecto Dubini - Organización dedicada a la juventud">
-    <title>Proyecto Dubini</title>
-
-    <link rel="stylesheet" href="/styles/layout/header.css">
-    <link rel="stylesheet" href="/styles/layout/footer.css">
-    <link rel="stylesheet" href="/styles/base.css">
-    <link rel="stylesheet" href="/styles/login.css">
-
-</head>
-
-<body>
-    <main role="main">
-    <section class="login">
-        <div class="container">
-            <h2>Iniciar Sesión</h2>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="password">Contraseña</label>
-                    <input type="password" name="password" id="password" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <button type="submit" id="loginButton" class="btn btn-primary">Acceder</button>
-                </div>
-                </form>
-    </section>
-    </main>
-</body>
-<script src="/scripts/script.js"></script>
-<script src="/scripts/login.js"></script>
-
-</html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Asociación Juvenil Proyecto Dubini - Organización dedicada a la juventud">
+        <title>Proyecto Dubini</title>
+        <link rel="stylesheet" href="/styles/layout/header.css">
+        <link rel="stylesheet" href="/styles/layout/footer.css">
+        <link rel="stylesheet" href="/styles/base.css">
+        <link rel="stylesheet" href="/styles/login.css">
+    </head>
+    <body>
+        <main role="main">
+            <section class="login">
+                <div class="container">
+                    <h2>Iniciar Sesión</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="password">Contraseña</label>
+                            <input
+                                type="password"
+                                name="password"
+                                id="password"
+                                class="form-control"
+                                required
+                            >
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="loginButton" class="btn btn-primary">Acceder</button>
+                        </div>
+                    </form>
+                </section>
+            </main>
+        </body>
+        <script src="/scripts/script.js"></script>
+        <script src="/scripts/login.js"></script>
+    </html>

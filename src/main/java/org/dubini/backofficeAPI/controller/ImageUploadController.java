@@ -25,8 +25,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ImageUploadController {
 
+    @SuppressWarnings("unused")
     private static final int DEFAULT_WIDTH = 800;
+    @SuppressWarnings("unused")
     private static final int DEFAULT_HEIGHT = 600;
+    @SuppressWarnings("unused")
     private static final float DEFAULT_QUALITY = 0.8f;
     private static final int MAX_WIDTH = 4096;
     private static final int MAX_HEIGHT = 4096;
@@ -37,35 +40,25 @@ public class ImageUploadController {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<EditorJSImageResponseDTO> uploadImage(
             @RequestParam("image") MultipartFile file,
-            @RequestParam(value = "width", defaultValue = "800") 
-            @Min(value = MIN_DIMENSION, message = "El ancho mínimo es 50px")
-            @Max(value = MAX_WIDTH, message = "El ancho máximo es 4096px") 
-            int width,
-            @RequestParam(value = "height", defaultValue = "600") 
-            @Min(value = MIN_DIMENSION, message = "La altura mínima es 50px")
-            @Max(value = MAX_HEIGHT, message = "La altura máxima es 4096px") 
-            int height,
-            @RequestParam(value = "quality", defaultValue = "0.8") 
-            @DecimalMin(value = "0.1", message = "La calidad mínima es 0.1")
-            @DecimalMax(value = "1.0", message = "La calidad máxima es 1.0") 
-            float quality) throws IOException {
+            @RequestParam(value = "width", defaultValue = "800") @Min(value = MIN_DIMENSION, message = "El ancho mínimo es 50px") @Max(value = MAX_WIDTH, message = "El ancho máximo es 4096px") int width,
+            @RequestParam(value = "height", defaultValue = "600") @Min(value = MIN_DIMENSION, message = "La altura mínima es 50px") @Max(value = MAX_HEIGHT, message = "La altura máxima es 4096px") int height,
+            @RequestParam(value = "quality", defaultValue = "0.8") @DecimalMin(value = "0.1", message = "La calidad mínima es 0.1") @DecimalMax(value = "1.0", message = "La calidad máxima es 1.0") float quality)
+            throws IOException {
 
-        log.debug("Upload request received - file: {}, width: {}, height: {}, quality: {}", 
+        log.debug("Upload request received - file: {}, width: {}, height: {}, quality: {}",
                 file.getOriginalFilename(), width, height, quality);
 
         validateFile(file);
 
         ImageResponseDTO response = imageService.saveImage(file, width, height, quality);
-        
+
         log.info("Image uploaded successfully: {}", response.getFileName());
-        
+
         return ResponseEntity.ok(
                 EditorJSImageResponseDTO.success(
                         response.getUrl(),
                         response.getFileName(),
-                        response.getSize()
-                )
-        );
+                        response.getSize()));
     }
 
     private void validateFile(MultipartFile file) {

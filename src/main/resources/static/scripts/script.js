@@ -68,7 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-
   // Observador de intersección para animaciones
   const observer = new IntersectionObserver(
     (entries) => {
@@ -102,7 +101,4 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   initHeroSlider();
-
 });
-
-  

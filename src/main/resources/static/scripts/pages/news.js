@@ -37,9 +37,7 @@ async function initEditor(post) {
     try {
       await editor.destroy();
       editor = null;
-    } catch (err) {
-
-    }
+    } catch (err) {}
   }
 
   try {
@@ -151,58 +149,58 @@ async function initEditor(post) {
 
 async function uploadImage(file) {
   const formData = new FormData();
-  formData.append('image', file);
+  formData.append("image", file);
 
   try {
-    const response = await fetch('/api/images/upload', {
-      method: 'POST',
-      body: formData
+    const response = await fetch("/api/images/upload", {
+      method: "POST",
+      body: formData,
     });
 
     if (!response.ok) {
-      throw new Error('Error al subir la imagen');
+      throw new Error("Error al subir la imagen");
     }
 
     const data = await response.json();
     if (data.success) {
       return data.file.url;
     } else {
-      throw new Error('Error al procesar la imagen');
+      throw new Error("Error al procesar la imagen");
     }
   } catch (error) {
-    console.error('Error:', error);
-    showStatus(error.message, 'error');
+    console.error("Error:", error);
+    showStatus(error.message, "error");
     throw error;
   }
 }
 
 function setupImageUpload() {
-  const imageUploadBtn = document.getElementById('imageUploadBtn');
-  const imageFile = document.getElementById('imageFile');
-  const imagePreview = document.getElementById('imagePreview');
+  const imageUploadBtn = document.getElementById("imageUploadBtn");
+  const imageFile = document.getElementById("imageFile");
+  const imagePreview = document.getElementById("imagePreview");
 
-  imageUploadBtn.addEventListener('click', () => {
+  imageUploadBtn.addEventListener("click", () => {
     imageFile.click();
   });
 
-  imageFile.addEventListener('change', async (e) => {
+  imageFile.addEventListener("change", async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     try {
       imageUploadBtn.disabled = true;
-      imageUploadBtn.textContent = 'Subiendo...';
-      
+      imageUploadBtn.textContent = "Subiendo...";
+
       const imageUrl = await uploadImage(file);
       featuredImage = imageUrl;
 
       // Mostrar vista previa
-      imagePreview.style.display = 'block';
+      imagePreview.style.display = "block";
       imagePreview.innerHTML = `<img src="${imageUrl}" alt="Vista previa">`;
-      
-      imageUploadBtn.textContent = 'Cambiar imagen';
+
+      imageUploadBtn.textContent = "Cambiar imagen";
     } catch (error) {
-      imageUploadBtn.textContent = 'Error al subir. Intentar de nuevo';
+      imageUploadBtn.textContent = "Error al subir. Intentar de nuevo";
     } finally {
       imageUploadBtn.disabled = false;
     }
@@ -227,7 +225,8 @@ document.addEventListener("DOMContentLoaded", function () {
   if (saveBtn) {
     saveBtn.addEventListener("click", async () => {
       if (!editor) return showStatus("Editor no está inicializado", "error");
-      if (!featuredImage) return showStatus("Debes seleccionar una imagen destacada", "error");
+      if (!featuredImage)
+        return showStatus("Debes seleccionar una imagen destacada", "error");
 
       try {
         saveBtn.disabled = true;
@@ -235,7 +234,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const outputData = await editor.save();
         await sendToBackend(outputData);
-        
+
         // El mensaje de éxito y la limpieza se manejan en sendToBackend
       } catch (error) {
         console.error("Error al guardar:", error);
@@ -247,7 +246,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-    if (clearBtn) {
+  if (clearBtn) {
     clearBtn.addEventListener("click", async () => {
       if (!editor) return;
       if (confirm("¿Estás seguro de que quieres limpiar todo el contenido?")) {
@@ -256,9 +255,10 @@ document.addEventListener("DOMContentLoaded", function () {
           "El contenido aparecerá aquí después de guardar...";
         // Limpiar imagen destacada
         featuredImage = null;
-        document.getElementById('imagePreview').style.display = 'none';
-        document.getElementById('imagePreview').innerHTML = '';
-        document.getElementById('imageUploadBtn').textContent = 'Seleccionar imagen destacada';
+        document.getElementById("imagePreview").style.display = "none";
+        document.getElementById("imagePreview").innerHTML = "";
+        document.getElementById("imageUploadBtn").textContent =
+          "Seleccionar imagen destacada";
         showStatus("Editor limpiado", "success");
       }
     });
@@ -288,12 +288,13 @@ async function sendToBackend(data) {
   const res = await newsService.addNew(post);
   if (!res.ok) throw new Error("Error del servidor: " + res.status);
   showStatus("¡Publicación guardada correctamente!", "success");
-  document.getElementById('title').value = '';
-  document.getElementById('description').value = '';
+  document.getElementById("title").value = "";
+  document.getElementById("description").value = "";
   featuredImage = null;
-  document.getElementById('imagePreview').style.display = 'none';
-  document.getElementById('imagePreview').innerHTML = '';
-  document.getElementById('imageUploadBtn').textContent = 'Seleccionar imagen destacada';
+  document.getElementById("imagePreview").style.display = "none";
+  document.getElementById("imagePreview").innerHTML = "";
+  document.getElementById("imageUploadBtn").textContent =
+    "Seleccionar imagen destacada";
   await editor.clear();
   showAll();
   return res;
@@ -348,37 +349,39 @@ async function showAll() {
     card.appendChild(contentDiv);
 
     container.appendChild(card);
-    id++
+    id++;
   });
 
-  document.getElementById("all-news").addEventListener("click", async function (e) {
-    
-    if (e.target.className === "edit-button") {
-      const id = e.target.id.replace("edit-", "");
-      console.log(news[id])
-      document.getElementById(`title`).value = news[id].title;
-      document.getElementById(`description`).value = news[id].description;
-      // Mostrar la imagen destacada actual
-      if (news[id].imageUrl) {
-        featuredImage = news[id].imageUrl;
-        document.getElementById('imagePreview').style.display = 'block';
-        document.getElementById('imagePreview').innerHTML = `<img src="${news[id].imageUrl}" alt="Vista previa">`;
-        document.getElementById('imageUploadBtn').textContent = 'Cambiar imagen';
+  document
+    .getElementById("all-news")
+    .addEventListener("click", async function (e) {
+      if (e.target.className === "edit-button") {
+        const id = e.target.id.replace("edit-", "");
+        console.log(news[id]);
+        document.getElementById(`title`).value = news[id].title;
+        document.getElementById(`description`).value = news[id].description;
+        // Mostrar la imagen destacada actual
+        if (news[id].imageUrl) {
+          featuredImage = news[id].imageUrl;
+          document.getElementById("imagePreview").style.display = "block";
+          document.getElementById(
+            "imagePreview"
+          ).innerHTML = `<img src="${news[id].imageUrl}" alt="Vista previa">`;
+          document.getElementById("imageUploadBtn").textContent =
+            "Cambiar imagen";
+        }
+        await initEditor(news[id].editorContent);
       }
-      await initEditor(news[id].editorContent);
-    }
-    if (e.target.className === "delete-button") {
-      const id = e.target.id.replace("delete-", "");
-      if (confirm("¿Estás seguro de que quieres eliminar este post?")) {
-        await deletePost(news[id].title);
-        document.getElementById("all-news").innerHTML = "";
-        showAll();
+      if (e.target.className === "delete-button") {
+        const id = e.target.id.replace("delete-", "");
+        if (confirm("¿Estás seguro de que quieres eliminar este post?")) {
+          await deletePost(news[id].title);
+          document.getElementById("all-news").innerHTML = "";
+          showAll();
+        }
       }
-    }
-  });
-  
+    });
 }
-
 
 async function deletePost(id) {
   const res = await newsService.deleteNew(id);

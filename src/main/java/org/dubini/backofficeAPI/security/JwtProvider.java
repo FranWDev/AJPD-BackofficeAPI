@@ -23,6 +23,7 @@ public class JwtProvider {
 
 
     public String generateToken() {
+        @SuppressWarnings("deprecation")
         String token = Jwts.builder()
                 .setSubject("backoffice")
                 .setIssuedAt(new Date())
@@ -39,6 +40,7 @@ public class JwtProvider {
 
     public String generateShortLivedToken() {
         long shortLivedExpiration = 30_000L;
+        @SuppressWarnings("deprecation")
         String token = Jwts.builder()
                 .setSubject("backoffice")
                 .setIssuedAt(new Date())

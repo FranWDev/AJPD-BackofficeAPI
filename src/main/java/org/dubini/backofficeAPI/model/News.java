@@ -17,16 +17,16 @@ import java.time.LocalDateTime;
 @Setter
 @Table(name = "news")
 public class News {
-    
+
     @Id
-    @Column(name = "title", nullable = false)  // Mapea al campo 'title' en la BD
-    private String title; // En Java lo llamamos 'name'
-    
+    @Column(name = "title", nullable = false)
+    private String title;
+
     @Type(JsonBinaryType.class)
     @Column(name = "content", columnDefinition = "jsonb", nullable = false)
     private String content;
-    
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-    
+
 }

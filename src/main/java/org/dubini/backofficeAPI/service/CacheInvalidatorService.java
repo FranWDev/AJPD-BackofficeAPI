@@ -26,11 +26,11 @@ public class CacheInvalidatorService {
 
     public Mono<HttpResponse> invalidateServiceWorkersCache() {
         return cacheInvalidation.invalidateServiceWorkersCache()
-        .map(res -> new HttpResponse("Service worker cache invalidated"))
-        .onErrorResume(err -> {
-            log.error("Error invalidating sw cache", err);
-            return Mono.just(new HttpResponse("Error invalidating sw cache"));
-        });
+                .map(res -> new HttpResponse("Service worker cache invalidated"))
+                .onErrorResume(err -> {
+                    log.error("Error invalidating sw cache", err);
+                    return Mono.just(new HttpResponse("Error invalidating sw cache"));
+                });
     }
 
 }

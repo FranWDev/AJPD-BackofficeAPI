@@ -1,4 +1,5 @@
 package org.dubini.backofficeAPI.dto.response;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -6,6 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class HttpResponse {
     private String message;
-
 
 }

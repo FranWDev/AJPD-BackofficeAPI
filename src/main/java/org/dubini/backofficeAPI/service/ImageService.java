@@ -31,8 +31,7 @@ public class ImageService {
 
     public ImageService(
             @Value("${uploadme.base-url:https://uploadme.me}") String uploadMeBaseUrl,
-            @Value("${uploadme.api-key}") String uploadMeApiKey
-    ) {
+            @Value("${uploadme.api-key}") String uploadMeApiKey) {
         this.apiKey = uploadMeApiKey;
         this.webClient = WebClient.builder()
                 .baseUrl(uploadMeBaseUrl)

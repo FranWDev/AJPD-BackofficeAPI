@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class NewsService {
 
     private static final String SAFE_FILENAME_PATTERN = "[^a-zA-Z0-9-_]";
-    
+
     private final NewsRepository newsRepository;
     private final ObjectMapper objectMapper;
     private final CacheInvalidatorService cacheInvalidation;
@@ -34,7 +34,7 @@ public class NewsService {
         log.debug("Retrieving news with identifier: {}", identifier);
 
         String safeTitle = sanitizeFileName(identifier);
-        
+
         return newsRepository.findById(safeTitle)
                 .map(this::parseNewsToDTO);
     }
@@ -43,7 +43,7 @@ public class NewsService {
         log.debug("Retrieving all news");
 
         List<News> newsList = newsRepository.findAllByOrderByCreatedAtDesc();
-        
+
         List<PublicationDTO> publications = newsList.stream()
                 .map(this::parseNewsToDTO)
                 .filter(pub -> pub != null)
@@ -61,25 +61,25 @@ public class NewsService {
         publicationDTO.setPublishedAt(LocalDateTime.now().toString());
 
         String safeTitle = sanitizeFileName(publicationDTO.getTitle());
-        
+
         try {
             String jsonContent = objectMapper.writeValueAsString(publicationDTO);
-            
+
             // Check if exists and overwrite if it does
             News news = newsRepository.findById(safeTitle)
                     .orElse(new News());
-            
+
             news.setTitle(safeTitle);
             news.setContent(jsonContent);
-            
+
             newsRepository.save(news);
-            
+
             log.info("News saved successfully: {}", publicationDTO.getTitle());
         } catch (JsonProcessingException e) {
             log.error("Error serializing news: {}", publicationDTO.getTitle(), e);
             throw new PublicationStorageException("Error al guardar la noticia", e);
         }
-        
+
         cacheInvalidation.invalidateNewsCache().subscribe(
                 resp -> log.info("News cache invalidated after save"),
                 err -> log.error("Error invalidating cache after save: {}", err.getMessage()));
@@ -97,7 +97,7 @@ public class NewsService {
 
         newsRepository.deleteById(safeTitle);
         log.info("News deleted successfully: {}", identifier);
-        
+
         cacheInvalidation.invalidateNewsCache().subscribe(
                 resp -> log.info("News cache invalidated after delete"),
                 err -> log.error("Error invalidating cache after delete: {}", err.getMessage()));
