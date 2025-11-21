@@ -3,14 +3,8 @@ package org.dubini.backofficeAPI.service;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.dubini.backofficeAPI.dto.response.ImageResponseDTO;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.dubini.backofficeAPI.config.SupabaseStorageProperties;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -21,28 +15,35 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.UUID;
 
 @Slf4j
 @Service
 public class ImageService {
 
     private final WebClient webClient;
-    private final String apiKey;
+    private final SupabaseStorageProperties supabaseStorageProperties;
 
-    public ImageService(
-            @Value("${uploadme.base-url:https://uploadme.me}") String uploadMeBaseUrl,
-            @Value("${uploadme.api-key}") String uploadMeApiKey) {
-        this.apiKey = uploadMeApiKey;
-        this.webClient = WebClient.builder()
-                .baseUrl(uploadMeBaseUrl)
-                .defaultHeader("User-Agent", "DubiniBackoffice/1.0")
+    public ImageService(WebClient.Builder webClientBuilder, SupabaseStorageProperties supabaseStorageProperties) {
+        this.supabaseStorageProperties = supabaseStorageProperties;
+
+        String baseUrl = supabaseStorageProperties.getApi();
+        if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+            baseUrl = "https://" + baseUrl;
+        }
+        
+        this.webClient = webClientBuilder
+                .baseUrl(baseUrl)
+                .defaultHeader("Authorization", "Bearer " + supabaseStorageProperties.getKey())
+                .defaultHeader("apikey", supabaseStorageProperties.getKey())
                 .build();
+        
+        log.info("ImageService configurado con Supabase URL: {}", baseUrl);
     }
 
     public ImageResponseDTO saveImage(MultipartFile file, int width, int height, float quality) throws IOException {
-        log.debug("Procesando imagen antes de subir a UploadMe: {}", file.getOriginalFilename());
+        log.debug("Procesando imagen antes de subir a Supabase: {}", file.getOriginalFilename());
 
-        // Redimensionar y convertir a webp
         BufferedImage originalImage = ImageIO.read(new ByteArrayInputStream(file.getBytes()));
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
@@ -54,64 +55,63 @@ public class ImageService {
 
         byte[] processedImage = outputStream.toByteArray();
 
-        // Cuerpo multipart: UploadMe espera "source"
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("source", new ByteArrayResource(processedImage) {
-            @Override
-            public String getFilename() {
-                return file.getOriginalFilename();
-            }
-        });
-        body.add("name", file.getOriginalFilename());
-
+        String fileName = generateUniqueFileName(file.getOriginalFilename());
+        
         try {
-            ResponseEntity<String> response = webClient.post()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/api/1/upload/")
-                            .queryParam("key", apiKey)
-                            .queryParam("format", "json")
-                            .queryParam("expiration", 0)
-                            .build())
-                    .contentType(MediaType.MULTIPART_FORM_DATA)
-                    .bodyValue(body)
+            String storagePath = String.format("/storage/v1/object/%s/%s", 
+                    supabaseStorageProperties.getBucket(), 
+                    fileName);
+
+            webClient.post()
+                    .uri(storagePath)
+                    .header("Content-Type", "image/webp")
+                    .bodyValue(processedImage)
                     .retrieve()
-                    .toEntity(String.class)
+                    .toBodilessEntity()
                     .onErrorResume(WebClientResponseException.class, e -> {
-                        log.error("UploadMe error: HTTP {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-                        return Mono.error(new RuntimeException("Error al contactar con UploadMe"));
+                        log.error("Supabase error: HTTP {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+                        return Mono.error(new RuntimeException("Error al contactar con Supabase Storage"));
                     })
                     .block();
 
-            if (response == null || response.getBody() == null) {
-                throw new IOException("Respuesta nula o vacía de UploadMe");
-            }
+            String imageUrl = String.format("%s/storage/v1/object/public/%s/%s",
+                    supabaseStorageProperties.getApi(),
+                    supabaseStorageProperties.getBucket(),
+                    fileName);
 
-            String responseBody = response.getBody();
-            log.info("📦 UploadMe respuesta: {}", responseBody);
-
-            JSONObject json = new JSONObject(responseBody);
-
-            // Leer el subobjeto "image"
-            JSONObject imageObject = json.optJSONObject("image");
-            if (imageObject == null) {
-                log.error("UploadMe no devolvió un objeto 'image': {}", json);
-                throw new IOException("No se recibió objeto 'image' válido desde UploadMe");
-            }
-
-            String imageUrl = imageObject.optString("url", null);
-            String fileName = imageObject.optString("filename", file.getOriginalFilename());
-            long fileSize = imageObject.optLong("size", processedImage.length);
-
-            if (imageUrl == null || imageUrl.isBlank()) {
-                throw new IOException("UploadMe no devolvió una URL válida");
-            }
-
-            log.info("Imagen subida correctamente: {}", imageUrl);
-            return new ImageResponseDTO(fileName, imageUrl, fileSize);
+            log.info("Imagen subida correctamente a Supabase: {}", imageUrl);
+            
+            return new ImageResponseDTO(fileName, imageUrl, processedImage.length);
 
         } catch (Exception e) {
-            log.error("Falló la subida a UploadMe: {}", e.getMessage(), e);
-            throw new IOException("Error al subir la imagen a UploadMe", e);
+            log.error("Falló la subida a Supabase: {}", e.getMessage(), e);
+            throw new IOException("Error al subir la imagen a Supabase Storage", e);
+        }
+    }
+
+    private String generateUniqueFileName(String originalFilename) {
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        String uuid = UUID.randomUUID().toString().substring(0, 8);
+        return String.format("%s_%s.webp", timestamp, uuid);
+    }
+
+    public void deleteImage(String fileName) throws IOException {
+        try {
+            String storagePath = String.format("/storage/v1/object/%s/%s",
+                    supabaseStorageProperties.getBucket(),
+                    fileName);
+
+            webClient.delete()
+                    .uri(storagePath)
+                    .retrieve()
+                    .toBodilessEntity()
+                    .block();
+
+            log.info("Imagen eliminada correctamente: {}", fileName);
+
+        } catch (Exception e) {
+            log.error("Error al eliminar imagen de Supabase: {}", e.getMessage(), e);
+            throw new IOException("Error al eliminar la imagen de Supabase Storage", e);
         }
     }
 }

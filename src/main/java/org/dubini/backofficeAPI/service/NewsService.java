@@ -15,6 +15,7 @@ import org.dubini.backofficeAPI.repository.NewsRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 public class NewsService {
 
     private static final String SAFE_FILENAME_PATTERN = "[^a-zA-Z0-9-_]";
+    private static final DateTimeFormatter DB_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final NewsRepository newsRepository;
     private final ObjectMapper objectMapper;
@@ -53,37 +55,39 @@ public class NewsService {
         return publications;
     }
 
-    public void save(PublicationDTO publicationDTO) {
-        log.debug("Saving news: {}", publicationDTO.getTitle());
+public void save(PublicationDTO publicationDTO) {
+    log.debug("Saving news: {}", publicationDTO.getTitle());
 
-        validatePublication(publicationDTO);
+    validatePublication(publicationDTO);
 
-        publicationDTO.setPublishedAt(LocalDateTime.now().toString());
+    String safeTitle = sanitizeFileName(publicationDTO.getTitle());
 
-        String safeTitle = sanitizeFileName(publicationDTO.getTitle());
+    try {
+        String jsonContent = objectMapper.writeValueAsString(publicationDTO);
 
-        try {
-            String jsonContent = objectMapper.writeValueAsString(publicationDTO);
+        // Check if exists and overwrite if it does
+        News news = newsRepository.findById(safeTitle).orElse(new News());
 
-            // Check if exists and overwrite if it does
-            News news = newsRepository.findById(safeTitle)
-                    .orElse(new News());
+        news.setTitle(safeTitle);
+        news.setContent(jsonContent);
 
-            news.setTitle(safeTitle);
-            news.setContent(jsonContent);
-
-            newsRepository.save(news);
-
-            log.info("News saved successfully: {}", publicationDTO.getTitle());
-        } catch (JsonProcessingException e) {
-            log.error("Error serializing news: {}", publicationDTO.getTitle(), e);
-            throw new PublicationStorageException("Error al guardar la noticia", e);
+        if (news.getCreatedAt() == null) {
+            news.setCreatedAt(LocalDateTime.now());
         }
 
-        cacheInvalidation.invalidateNewsCache().subscribe(
-                resp -> log.info("News cache invalidated after save"),
-                err -> log.error("Error invalidating cache after save: {}", err.getMessage()));
+        newsRepository.save(news);
+
+        log.info("News saved successfully: {}", publicationDTO.getTitle());
+    } catch (JsonProcessingException e) {
+        log.error("Error serializing news: {}", publicationDTO.getTitle(), e);
+        throw new PublicationStorageException("Error al guardar la noticia", e);
     }
+
+    cacheInvalidation.invalidateNewsCache().subscribe(
+            resp -> log.info("News cache invalidated after save"),
+            err -> log.error("Error invalidating cache after save: {}", err.getMessage()));
+}
+
 
     public void delete(String identifier) {
         log.debug("Deleting news: {}", identifier);
