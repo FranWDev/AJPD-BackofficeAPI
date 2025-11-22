@@ -1,17 +1,22 @@
 # =======================================
-# DOCKERFILE PARA IMAGEN NATIVA CORREGIDO
+# DOCKERFILE PARA IMAGEN NATIVA CON DEBIAN
 # =======================================
 
 # Stage 1: Build con GraalVM
-FROM ghcr.io/graalvm/native-image:ol8-java17-22.3.0 AS builder
+FROM ghcr.io/graalvm/native-image:22.3.2-java17 AS builder
 
 WORKDIR /build
 
-# Instalar herramientas necesarias para descomprimir y locales
-RUN yum install -y tar gzip glibc-langpack-en && \
-    yum clean all
+# Instalar herramientas necesarias
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        tar \
+        gzip \
+        locales && \
+    rm -rf /var/lib/apt/lists/*
 
 # Configurar locale para UTF-8
+RUN locale-gen en_US.UTF-8
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
@@ -30,7 +35,10 @@ FROM debian:bookworm-slim
 
 # Instalar dependencias mínimas
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates tzdata && \
+    apt-get install -y --no-install-recommends \
+        curl \
+        ca-certificates \
+        tzdata && \
     rm -rf /var/lib/apt/lists/*
 
 # Configurar timezone
