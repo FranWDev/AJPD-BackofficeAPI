@@ -52,10 +52,14 @@
 			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
 		</dependency>
 		
-		<!-- Validation -->
+		<!-- Validation - AÑADIDO para resolver el warning -->
 		<dependency>
 			<groupId>jakarta.validation</groupId>
 			<artifactId>jakarta.validation-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
 		</dependency>
 		
 		<!-- Database -->
@@ -114,7 +118,11 @@
 			<artifactId>spring-dotenv</artifactId>
 			<version>3.0.0</version>
 		</dependency>
-<dependency> <groupId>io.github.cdimascio</groupId> <artifactId>dotenv-java</artifactId> <version>3.2.0</version> </dependency>
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>dotenv-java</artifactId>
+			<version>3.2.0</version>
+		</dependency>
 		
 		<!-- Lombok (solo compilación) -->
 		<dependency>
