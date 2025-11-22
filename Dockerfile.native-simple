@@ -1,46 +1,67 @@
 # =======================================
+
 # DOCKERFILE PARA IMAGEN NATIVA
+
 # =======================================
 
 # Stage 1: Build con GraalVM (se ejecuta en GitHub Actions)
+
 FROM ghcr.io/graalvm/native-image:ol8-java17-22.3.0 AS builder
 
 WORKDIR /build
 
+# Instalar herramientas necesarias para descomprimir y locales
+
+RUN microdnf install -y tar gzip glibc-langpack-en && 
+microdnf clean all
+
+# Configurar locale para UTF-8
+
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
+
 # Copiar archivos del proyecto
+
 COPY pom.xml .
 COPY mvnw .
 COPY .mvn .mvn
 COPY src src
 
 # Compilar el binario nativo (tarda 5-15 minutos)
-RUN chmod +x mvnw && \
-    ./mvnw -Pnative native:compile -DskipTests
+
+RUN chmod +x mvnw && 
+./mvnw -Pnative native:compile -DskipTests
 
 # Stage 2: Runtime minimal (solo ~120MB)
+
 FROM debian:bookworm-slim
 
 # Instalar dependencias mínimas
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    curl \
-    ca-certificates \
-    tzdata && \
-    rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && 
+apt-get install -y --no-install-recommends 
+curl 
+ca-certificates 
+tzdata && 
+rm -rf /var/lib/apt/lists/*
 
 # Configurar timezone
+
 ENV TZ=Europe/Madrid
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime
 
 # Crear usuario no-root
+
 RUN groupadd -r spring && useradd -r -g spring spring
 
 WORKDIR /app
 
 # Copiar el binario nativo desde el builder
+
 COPY --from=builder --chown=spring:spring /build/target/backofficeAPI /app/backofficeAPI
 
 # Dar permisos de ejecución
+
 RUN chmod +x /app/backofficeAPI
 
 USER spring:spring
@@ -48,11 +69,13 @@ USER spring:spring
 EXPOSE 8080
 
 # Healthcheck ajustado para inicio rápido
-HEALTHCHECK --interval=30s \
-            --timeout=5s \
-            --start-period=15s \
-            --retries=3 \
-    CMD curl -f http://localhost:${PORT:-8080}/actuator/health || exit 1
+
+HEALTHCHECK --interval=30s 
+--timeout=5s 
+--start-period=15s 
+--retries=3 
+CMD curl -f [http://localhost:${PORT:-8080}/actuator/health](http://localhost:${PORT:-8080}/actuator/health) || exit 1
 
 # Ejecutar el binario directamente (no necesita JVM)
+
 ENTRYPOINT ["/app/backofficeAPI"]
