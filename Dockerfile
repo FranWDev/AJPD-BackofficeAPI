@@ -19,11 +19,14 @@ ENV MAVEN_CONFIG=/root/.m2
 
 WORKDIR /app
 
-# Copiar wrapper de Maven si existe (mejor práctica)
-COPY .mvn/ .mvn/ 2>/dev/null || true
-COPY mvnw* pom.xml ./
+# Copiar archivos Maven
+COPY pom.xml ./
 
-# Hacer ejecutable el wrapper
+# Copiar wrapper de Maven (opcional - ignora si no existe)
+COPY .mvn .mvn 2>/dev/null || echo "Maven wrapper no encontrado, usando Maven del sistema"
+COPY mvnw mvnw.cmd ./ 2>/dev/null || echo "Scripts mvnw no encontrados"
+
+# Hacer ejecutable el wrapper si existe
 RUN if [ -f mvnw ]; then chmod +x mvnw; fi
 
 # Descargar dependencias
