@@ -58,8 +58,6 @@ RUN chmod +x /app/backofficeAPI
 
 USER spring:spring
 
-EXPOSE 8080
-
 # Healthcheck
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
     CMD curl -f http://localhost:${PORT:-8080}/actuator/health || exit 1
