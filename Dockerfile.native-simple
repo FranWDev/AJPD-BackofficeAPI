@@ -1,6 +1,6 @@
 # =======================================
 
-# DOCKERFILE PARA IMAGEN NATIVA
+# DOCKERFILE PARA IMAGEN NATIVA CORREGIDO
 
 # =======================================
 
@@ -12,8 +12,8 @@ WORKDIR /build
 
 # Instalar herramientas necesarias para descomprimir y locales
 
-RUN microdnf install -y tar gzip glibc-langpack-en && 
-microdnf clean all
+RUN yum install -y tar gzip glibc-langpack-en && 
+yum clean all
 
 # Configurar locale para UTF-8
 
