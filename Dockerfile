@@ -1,39 +1,118 @@
-# ============================
-# 1. Etapa de build (Maven)
-# ============================
-FROM maven:3.9-eclipse-temurin-17 AS build
+# =======================================
+# DOCKERFILE CON FALLBACK - PRODUCCIÓN
+# =======================================
+
+# =======================================
+# 1. BUILD STAGE
+# =======================================
+FROM eclipse-temurin:17-jdk-alpine-3.22 AS build
+
+# Instalar herramientas necesarias
+RUN apk add --no-cache \
+    maven \
+    curl \
+    bash
+
+# Variables de entorno para Maven
+ENV MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Dmaven.artifact.threads=8"
+ENV MAVEN_CONFIG=/root/.m2
 
 WORKDIR /app
 
-# Copiamos solo el pom para cachear dependencias
-COPY pom.xml .
-RUN mvn -q -B dependency:go-offline
+# Copiar wrapper de Maven si existe (mejor práctica)
+COPY .mvn/ .mvn/ 2>/dev/null || true
+COPY mvnw* pom.xml ./
 
-# Copiamos el código fuente
+# Hacer ejecutable el wrapper
+RUN if [ -f mvnw ]; then chmod +x mvnw; fi
+
+# Descargar dependencias
+RUN if [ -f mvnw ]; then \
+      ./mvnw dependency:go-offline -B; \
+    else \
+      mvn dependency:go-offline -B; \
+    fi
+
+# Copiar código fuente
 COPY src ./src
 
-# Construimos el JAR (sin tests para evitar problemas de entorno)
-RUN mvn -q -B clean package -DskipTests
+# Build con perfil de producción
+RUN if [ -f mvnw ]; then \
+      ./mvnw clean package -Pproduction -T 1C; \
+    else \
+      mvn clean package -Pproduction -T 1C; \
+    fi && \
+    ls -lh target/*.jar
 
+# =======================================
+# 2. EXTRACT STAGE
+# =======================================
+FROM eclipse-temurin:17-jre-alpine-3.22 AS extract
 
-# ============================
-# 2. Etapa de runtime 
-# ============================
-FROM eclipse-temurin:17-jre
+WORKDIR /extract
 
-# Para apps Java, es buena práctica evitar root
-RUN useradd -m spring
-USER spring
+COPY --from=build /app/target/*.jar app.jar
+
+RUN java -Djarmode=layertools -jar app.jar extract --destination .
+
+# =======================================
+# 3. RUNTIME STAGE
+# =======================================
+FROM eclipse-temurin:17-jre-alpine-3.22
+
+LABEL maintainer="org.dubini" \
+      application="backofficeAPI" \
+      version="1.0-RELEASE"
+
+# Instalar utilidades
+RUN apk add --no-cache \
+    dumb-init \
+    curl \
+    tzdata && \
+    rm -rf /var/cache/apk/*
+
+ENV TZ=Europe/Madrid
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 WORKDIR /app
 
-# Copiamos el JAR final
-COPY --from=build /app/target/backofficeAPI-1.0-RELEASE.jar app.jar
+RUN addgroup -S spring && \
+    adduser -S spring -G spring -h /app && \
+    chown -R spring:spring /app
 
-# Puerto expuesto
+USER spring:spring
+
+# Copiar capas
+COPY --from=extract --chown=spring:spring /extract/dependencies/ ./
+COPY --from=extract --chown=spring:spring /extract/spring-boot-loader/ ./
+COPY --from=extract --chown=spring:spring /extract/snapshot-dependencies/ ./
+COPY --from=extract --chown=spring:spring /extract/application/ ./
+
 EXPOSE 8080
 
-# Opciones para optimizar el rendimiento
-ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75"
+ENV JAVA_TOOL_OPTIONS="\
+    -XX:+UseContainerSupport \
+    -XX:MaxRAMPercentage=75.0 \
+    -XX:InitialRAMPercentage=50.0 \
+    -XX:MinRAMPercentage=50.0 \
+    -XX:+UseG1GC \
+    -XX:MaxGCPauseMillis=100 \
+    -XX:+UseStringDeduplication \
+    -XX:+ParallelRefProcEnabled \
+    -XX:+DisableExplicitGC \
+    -XX:+ExitOnOutOfMemoryError \
+    -Djava.security.egd=file:/dev/./urandom \
+    -Dfile.encoding=UTF-8 \
+    -Duser.timezone=Europe/Madrid"
 
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+ENV SPRING_PROFILES_ACTIVE=production \
+    SERVER_PORT=8080
+
+HEALTHCHECK --interval=30s \
+            --timeout=5s \
+            --start-period=60s \
+            --retries=3 \
+    CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["java", "org.springframework.boot.loader.launch.JarLauncher"]
