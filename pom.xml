@@ -52,7 +52,7 @@
 			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
 		</dependency>
 		
-		<!-- Validation - AÑADIDO para resolver el warning -->
+		<!-- Validation -->
 		<dependency>
 			<groupId>jakarta.validation</groupId>
 			<artifactId>jakarta.validation-api</artifactId>
@@ -124,14 +124,14 @@
 			<version>3.2.0</version>
 		</dependency>
 		
-		<!-- Lombok (solo compilación) -->
+		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		
-		<!-- DevTools (solo desarrollo, no se incluye en producción) -->
+		<!-- DevTools -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -169,11 +169,8 @@
 		</plugins>
 	</build>
 	
-	<!-- ========================================= -->
-	<!-- PROFILES -->
-	<!-- ========================================= -->
 	<profiles>
-		<!-- Perfil AOT: Optimización Ahead-of-Time -->
+		<!-- Perfil AOT -->
 		<profile>
 			<id>aot</id>
 			<build>
@@ -210,7 +207,7 @@
 			</build>
 		</profile>
 		
-		<!-- Perfil Native: Compilación a binario nativo con GraalVM -->
+		<!-- Perfil Native corregido -->
 		<profile>
 			<id>native</id>
 			<build>
@@ -223,7 +220,7 @@
 							<buildArgs>
 								<buildArg>--no-fallback</buildArg>
 								<buildArg>-H:+ReportExceptionStackTraces</buildArg>
-								<buildArg>--initialize-at-build-time=org.postgresql</buildArg>
+								<buildArg>--initialize-at-run-time=java.sql.DriverManager,org.postgresql</buildArg>
 							</buildArgs>
 						</configuration>
 						<executions>
@@ -252,7 +249,7 @@
 			</build>
 		</profile>
 		
-		<!-- Perfil Production: Optimizaciones de producción -->
+		<!-- Perfil Production -->
 		<profile>
 			<id>production</id>
 			<properties>
@@ -285,5 +282,4 @@
 			</build>
 		</profile>
 	</profiles>
-	
 </project>
