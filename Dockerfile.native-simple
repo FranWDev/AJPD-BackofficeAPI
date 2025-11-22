@@ -1,22 +1,13 @@
-# =======================================
-# DOCKERFILE PARA IMAGEN NATIVA CON DEBIAN
-# =======================================
-
 # Stage 1: Build con GraalVM
 FROM ghcr.io/graalvm/native-image-community:17 AS builder
 
 WORKDIR /build
 
-# Instalar herramientas necesarias
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        tar \
-        gzip \
-        locales && \
-    rm -rf /var/lib/apt/lists/*
+# Instalar herramientas sin actualizar paquetes existentes
+RUN microdnf install -y tar gzip && \
+    microdnf clean all
 
-# Configurar locale para UTF-8
-RUN locale-gen en_US.UTF-8
+# Configurar locale
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
@@ -27,40 +18,26 @@ COPY .mvn .mvn
 COPY src src
 
 # Compilar el binario nativo
-RUN chmod +x mvnw && \
-    ./mvnw -Pnative native:compile -DskipTests
+RUN chmod +x mvnw && ./mvnw -Pnative native:compile -DskipTests
 
 # Stage 2: Runtime minimal
 FROM debian:bookworm-slim
 
-# Instalar dependencias mínimas
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        curl \
-        ca-certificates \
-        tzdata && \
+    apt-get install -y --no-install-recommends curl ca-certificates tzdata && \
     rm -rf /var/lib/apt/lists/*
 
-# Configurar timezone
 ENV TZ=Europe/Madrid
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime
 
-# Crear usuario no-root
 RUN groupadd -r spring && useradd -r -g spring spring
 
 WORKDIR /app
-
-# Copiar el binario nativo desde el builder
 COPY --from=builder --chown=spring:spring /build/target/backofficeAPI /app/backofficeAPI
-
-# Dar permisos de ejecución
 RUN chmod +x /app/backofficeAPI
-
 USER spring:spring
 
-# Healthcheck
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
     CMD curl -f http://localhost:${PORT:-8080}/actuator/health || exit 1
 
-# Ejecutar el binario directamente
 ENTRYPOINT ["/app/backofficeAPI"]
