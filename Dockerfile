@@ -1,5 +1,5 @@
 # =======================================
-# DOCKERFILE CON FALLBACK - PRODUCCIÓN
+# DOCKERFILE CON FALLBACK - PRODUCCIÓN (Render-friendly)
 # =======================================
 
 # =======================================
@@ -7,37 +7,27 @@
 # =======================================
 FROM eclipse-temurin:17-jdk-alpine-3.22 AS build
 
-# Instalar herramientas necesarias
-RUN apk add --no-cache \
-    maven \
-    curl \
-    bash
+RUN apk add --no-cache maven curl bash
 
-# Variables de entorno para Maven
 ENV MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Dmaven.artifact.threads=8"
 ENV MAVEN_CONFIG=/root/.m2
 
 WORKDIR /app
 
-# Copiar archivos de Maven (si no existen, el build usará el Maven del sistema)
 COPY pom.xml ./
 COPY mvnw* ./
 COPY .mvn .mvn
 
-# Hacer ejecutable el wrapper si existe
 RUN chmod +x mvnw 2>/dev/null || echo "No mvnw found, will use system maven"
 
-# Descargar dependencias
 RUN if [ -f mvnw ]; then \
       ./mvnw dependency:go-offline -B; \
     else \
       mvn dependency:go-offline -B; \
     fi
 
-# Copiar código fuente
 COPY src ./src
 
-# Build con perfil de producción
 RUN if [ -f mvnw ]; then \
       ./mvnw clean package -Pproduction -T 1C; \
     else \
@@ -65,11 +55,7 @@ LABEL maintainer="org.dubini" \
       application="backofficeAPI" \
       version="1.0-RELEASE"
 
-# Instalar utilidades
-RUN apk add --no-cache \
-    dumb-init \
-    curl \
-    tzdata && \
+RUN apk add --no-cache dumb-init curl tzdata && \
     rm -rf /var/cache/apk/*
 
 ENV TZ=Europe/Madrid
@@ -83,13 +69,10 @@ RUN addgroup -S spring && \
 
 USER spring:spring
 
-# Copiar capas
 COPY --from=extract --chown=spring:spring /extract/dependencies/ ./
 COPY --from=extract --chown=spring:spring /extract/spring-boot-loader/ ./
 COPY --from=extract --chown=spring:spring /extract/snapshot-dependencies/ ./
 COPY --from=extract --chown=spring:spring /extract/application/ ./
-
-EXPOSE 8080
 
 ENV JAVA_TOOL_OPTIONS="\
     -XX:+UseContainerSupport \
@@ -106,14 +89,15 @@ ENV JAVA_TOOL_OPTIONS="\
     -Dfile.encoding=UTF-8 \
     -Duser.timezone=Europe/Madrid"
 
-ENV SPRING_PROFILES_ACTIVE=production \
-    SERVER_PORT=8080
+ENV SPRING_PROFILES_ACTIVE=production
+
+# No fijamos puerto, Spring lo leerá de la variable PORT
 
 HEALTHCHECK --interval=30s \
             --timeout=5s \
             --start-period=60s \
             --retries=3 \
-    CMD curl -f http://localhost:8080/actuator/health || exit 1
+    CMD curl -f http://localhost:${PORT}/actuator/health || exit 1
 
 ENTRYPOINT ["dumb-init", "--"]
 CMD ["java", "org.springframework.boot.loader.launch.JarLauncher"]
