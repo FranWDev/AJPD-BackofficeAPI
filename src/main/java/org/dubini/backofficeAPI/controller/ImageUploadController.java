@@ -40,9 +40,9 @@ public class ImageUploadController {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<EditorJSImageResponseDTO> uploadImage(
             @RequestParam("image") MultipartFile file,
-            @RequestParam(value = "width", defaultValue = "800") @Min(value = MIN_DIMENSION, message = "El ancho mínimo es 50px") @Max(value = MAX_WIDTH, message = "El ancho máximo es 4096px") int width,
-            @RequestParam(value = "height", defaultValue = "600") @Min(value = MIN_DIMENSION, message = "La altura mínima es 50px") @Max(value = MAX_HEIGHT, message = "La altura máxima es 4096px") int height,
-            @RequestParam(value = "quality", defaultValue = "0.8") @DecimalMin(value = "0.1", message = "La calidad mínima es 0.1") @DecimalMax(value = "1.0", message = "La calidad máxima es 1.0") float quality)
+            @RequestParam(defaultValue = "800") @Min(value = MIN_DIMENSION, message = "El ancho mínimo es 50px") @Max(value = MAX_WIDTH, message = "El ancho máximo es 4096px") int width,
+            @RequestParam(defaultValue = "600") @Min(value = MIN_DIMENSION, message = "La altura mínima es 50px") @Max(value = MAX_HEIGHT, message = "La altura máxima es 4096px") int height,
+            @RequestParam(defaultValue = "0.8") @DecimalMin(value = "0.1", message = "La calidad mínima es 0.1") @DecimalMax(value = "1.0", message = "La calidad máxima es 1.0") float quality)
             throws IOException {
 
         log.debug("Upload request received - file: {}, width: {}, height: {}, quality: {}",
@@ -50,7 +50,7 @@ public class ImageUploadController {
 
         validateFile(file);
 
-        ImageResponseDTO response = imageService.saveImage(file, width, height, quality);
+        ImageResponseDTO response = imageService.saveImage(file);
 
         log.info("Image uploaded successfully: {}", response.getFileName());
 

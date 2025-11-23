@@ -1,0 +1,32 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": "\\Qapplication.properties\\E"
+      },
+      {
+        "pattern": "\\Qapplication.yml\\E"
+      },
+      {
+        "pattern": "\\Qbanner.txt\\E"
+      },
+      {
+        "pattern": "\\Qtemplates/\\E.*"
+      },
+      {
+        "pattern": "\\Qstatic/\\E.*"
+      },
+      {
+        "pattern": "\\Qorg/postgresql/\\E.*"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/\\E.*"
+      }
+    ]
+  },
+  "bundles": [
+    {
+      "name": "messages"
+    }
+  ]
+}

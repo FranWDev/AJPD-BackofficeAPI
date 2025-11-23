@@ -1,8 +1,26 @@
 import { newsService } from "../api/newsService.js";
+import { ImageProcessor } from "../components/imageProcessor.js";
+import { CustomImageUploader } from "../components/customImageUploader.js";
 
 let editor;
 let news = {};
 let featuredImage = null;
+
+const imageProcessor = new ImageProcessor({
+  maxWidth: 1920,      
+  maxHeight: 1080,   
+  quality: 0.85,       
+  outputFormat: 'image/webp'
+});
+
+const editorImageUploader = new CustomImageUploader({
+  endpoint: "/api/images/upload",
+  endpointByUrl: "/api/fetch-url",
+  maxWidth: 1920,
+  maxHeight: 1080,
+  quality: 0.85,
+  outputFormat: 'image/webp'
+});
 
 function waitForDependencies() {
   return new Promise((resolve) => {
@@ -81,9 +99,13 @@ async function initEditor(post) {
         image: {
           class: ImageTool,
           config: {
-            endpoints: {
-              byFile: "/api/images/upload",
-              byUrl: "/api/fetch-url",
+            uploader: {
+              uploadByFile(file) {
+                return editorImageUploader.uploadByFile(file);
+              },
+              uploadByUrl(url) {
+                return editorImageUploader.uploadByUrl(url);
+              },
             },
           },
         },
@@ -149,9 +171,25 @@ async function initEditor(post) {
 
 async function uploadImage(file) {
   const formData = new FormData();
-  formData.append("image", file);
-
+  
   try {
+
+    const originalInfo = await imageProcessor.getImageInfo(file);
+    console.log('Imagen original:', originalInfo);
+    
+    showStatus('Procesando imagen...', 'info');
+    const processedBlob = await imageProcessor.processImage(file);
+    
+    const processedFile = imageProcessor.blobToFile(
+      processedBlob,
+      `${Date.now()}.webp`
+    );
+    
+    const reduction = ((1 - processedFile.size / file.size) * 100).toFixed(1);
+    console.log(`Imagen procesada: ${(processedFile.size / 1024).toFixed(2)} KB (reducción del ${reduction}%)`);
+    
+    formData.append("image", processedFile);
+
     const response = await fetch("/api/images/upload", {
       method: "POST",
       body: formData,
@@ -163,6 +201,7 @@ async function uploadImage(file) {
 
     const data = await response.json();
     if (data.success) {
+      showStatus(`Imagen subida (${reduction}% más pequeña)`, 'success');
       return data.file.url;
     } else {
       throw new Error("Error al procesar la imagen");
@@ -187,14 +226,24 @@ function setupImageUpload() {
     const file = e.target.files[0];
     if (!file) return;
 
+    if (!file.type.startsWith('image/')) {
+      showStatus('Por favor selecciona una imagen válida', 'error');
+      return;
+    }
+
+    const maxSize = 10 * 1024 * 1024; 
+    if (file.size > maxSize) {
+      showStatus('La imagen es demasiado grande (máx. 10MB)', 'error');
+      return;
+    }
+
     try {
       imageUploadBtn.disabled = true;
-      imageUploadBtn.textContent = "Subiendo...";
+      imageUploadBtn.textContent = "Procesando...";
 
       const imageUrl = await uploadImage(file);
       featuredImage = imageUrl;
 
-      // Mostrar vista previa
       imagePreview.style.display = "block";
       imagePreview.innerHTML = `<img src="${imageUrl}" alt="Vista previa">`;
 
@@ -235,7 +284,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const outputData = await editor.save();
         await sendToBackend(outputData);
 
-        // El mensaje de éxito y la limpieza se manejan en sendToBackend
       } catch (error) {
         console.error("Error al guardar:", error);
         showStatus("Error al guardar: " + error.message, "error");
@@ -253,7 +301,6 @@ document.addEventListener("DOMContentLoaded", function () {
         await editor.clear();
         document.getElementById("output").textContent =
           "El contenido aparecerá aquí después de guardar...";
-        // Limpiar imagen destacada
         featuredImage = null;
         document.getElementById("imagePreview").style.display = "none";
         document.getElementById("imagePreview").innerHTML = "";
@@ -328,7 +375,6 @@ async function showAll() {
 
     const description = document.createElement("p");
     description.id = `description-${id}`;
-
     description.textContent = post.description;
 
     const editButton = document.createElement("button");
@@ -360,7 +406,6 @@ async function showAll() {
         console.log(news[id]);
         document.getElementById(`title`).value = news[id].title;
         document.getElementById(`description`).value = news[id].description;
-        // Mostrar la imagen destacada actual
         if (news[id].imageUrl) {
           featuredImage = news[id].imageUrl;
           document.getElementById("imagePreview").style.display = "block";

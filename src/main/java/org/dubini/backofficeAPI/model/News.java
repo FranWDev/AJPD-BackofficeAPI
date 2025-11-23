@@ -1,38 +1,29 @@
 package org.dubini.backofficeAPI.model;
 
-import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-import org.hibernate.annotations.Type;
 import java.time.LocalDateTime;
 
-@Entity
+@Table(name = "news")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "news")
 public class News {
 
     @Id
-    @Column(name = "title", nullable = false)
+    @Column("title")
     private String title;
 
-    @Type(JsonBinaryType.class)
-    @Column(name = "content", columnDefinition = "jsonb", nullable = false)
-    private String content;
+    @Column("content")
+    private String content; // JSON como String
 
-    @Column(name = "created_at", nullable = false)
+    @Column("created_at")
     private LocalDateTime createdAt;
-
-    @PrePersist
-    protected void onCreate() {
-        if (createdAt == null) {
-            createdAt = LocalDateTime.now();
-        }
-    }
 }

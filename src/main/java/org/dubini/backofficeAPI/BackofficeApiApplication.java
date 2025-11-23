@@ -18,7 +18,7 @@ public class BackofficeApiApplication {
                 System.setProperty(entry.getKey(), entry.getValue());
             }
         });
-
+        
         SpringApplication.run(BackofficeApiApplication.class, args);
     }
 

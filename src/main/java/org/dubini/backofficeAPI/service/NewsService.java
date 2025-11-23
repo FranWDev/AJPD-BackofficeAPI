@@ -55,39 +55,34 @@ public class NewsService {
         return publications;
     }
 
-public void save(PublicationDTO publicationDTO) {
-    log.debug("Saving news: {}", publicationDTO.getTitle());
+    public void save(PublicationDTO publicationDTO) {
+        log.debug("Saving news: {}", publicationDTO.getTitle());
 
-    validatePublication(publicationDTO);
+        validatePublication(publicationDTO);
 
-    String safeTitle = sanitizeFileName(publicationDTO.getTitle());
+        String safeTitle = sanitizeFileName(publicationDTO.getTitle());
 
-    try {
-        String jsonContent = objectMapper.writeValueAsString(publicationDTO);
+        try {
+            String jsonContent = objectMapper.writeValueAsString(publicationDTO);
 
-        // Check if exists and overwrite if it does
-        News news = newsRepository.findById(safeTitle).orElse(new News());
+            // Obtener la fecha de creación si existe, o usar la actual
+            LocalDateTime createdAt = newsRepository.findById(safeTitle)
+                    .map(News::getCreatedAt)
+                    .orElse(LocalDateTime.now());
 
-        news.setTitle(safeTitle);
-        news.setContent(jsonContent);
+            // Usar el método personalizado con CAST a jsonb
+            newsRepository.upsertNews(safeTitle, jsonContent, createdAt);
 
-        if (news.getCreatedAt() == null) {
-            news.setCreatedAt(LocalDateTime.now());
+            log.info("News saved successfully: {}", publicationDTO.getTitle());
+        } catch (JsonProcessingException e) {
+            log.error("Error serializing news: {}", publicationDTO.getTitle(), e);
+            throw new PublicationStorageException("Error al guardar la noticia", e);
         }
 
-        newsRepository.save(news);
-
-        log.info("News saved successfully: {}", publicationDTO.getTitle());
-    } catch (JsonProcessingException e) {
-        log.error("Error serializing news: {}", publicationDTO.getTitle(), e);
-        throw new PublicationStorageException("Error al guardar la noticia", e);
+        cacheInvalidation.invalidateNewsCache().subscribe(
+                resp -> log.info("News cache invalidated after save"),
+                err -> log.error("Error invalidating cache after save: {}", err.getMessage()));
     }
-
-    cacheInvalidation.invalidateNewsCache().subscribe(
-            resp -> log.info("News cache invalidated after save"),
-            err -> log.error("Error invalidating cache after save: {}", err.getMessage()));
-}
-
 
     public void delete(String identifier) {
         log.debug("Deleting news: {}", identifier);

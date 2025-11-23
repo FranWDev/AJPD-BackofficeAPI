@@ -6,7 +6,7 @@ on:
       - main
       - production
       - development
-  workflow_dispatch: # Permite ejecutar manualmente
+  workflow_dispatch:
 
 jobs:
   build-native:
@@ -58,4 +58,4 @@ jobs:
           cache-to: type=gha,mode=max
       
       - name: Image digest
-        run: echo "Image pushed successfully! 🚀"
+        run: echo "Image pushed successfully!"

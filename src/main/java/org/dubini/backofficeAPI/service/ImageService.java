@@ -1,7 +1,6 @@
 package org.dubini.backofficeAPI.service;
 
 import lombok.extern.slf4j.Slf4j;
-import net.coobird.thumbnailator.Thumbnails;
 import org.dubini.backofficeAPI.dto.response.ImageResponseDTO;
 import org.dubini.backofficeAPI.config.SupabaseStorageProperties;
 import org.springframework.stereotype.Service;
@@ -10,12 +9,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -24,6 +20,15 @@ public class ImageService {
     private final WebClient webClient;
     private final SupabaseStorageProperties supabaseStorageProperties;
 
+    private static final Set<String> ALLOWED_CONTENT_TYPES = Set.of(
+            "image/jpeg",
+            "image/jpg",
+            "image/png",
+            "image/webp",
+            "image/gif");
+
+    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
     public ImageService(WebClient.Builder webClientBuilder, SupabaseStorageProperties supabaseStorageProperties) {
         this.supabaseStorageProperties = supabaseStorageProperties;
 
@@ -31,41 +36,35 @@ public class ImageService {
         if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
             baseUrl = "https://" + baseUrl;
         }
-        
+
         this.webClient = webClientBuilder
                 .baseUrl(baseUrl)
                 .defaultHeader("Authorization", "Bearer " + supabaseStorageProperties.getKey())
                 .defaultHeader("apikey", supabaseStorageProperties.getKey())
                 .build();
-        
+
         log.info("ImageService configurado con Supabase URL: {}", baseUrl);
     }
 
-    public ImageResponseDTO saveImage(MultipartFile file, int width, int height, float quality) throws IOException {
-        log.debug("Procesando imagen antes de subir a Supabase: {}", file.getOriginalFilename());
+    public ImageResponseDTO saveImage(MultipartFile file) throws IOException {
+        log.debug("Subiendo imagen a Supabase: {}", file.getOriginalFilename());
 
-        BufferedImage originalImage = ImageIO.read(new ByteArrayInputStream(file.getBytes()));
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        // Validaciones básicas
+        validateImage(file);
 
-        Thumbnails.of(originalImage)
-                .size(width, height)
-                .outputFormat("webp")
-                .outputQuality(quality)
-                .toOutputStream(outputStream);
-
-        byte[] processedImage = outputStream.toByteArray();
-
+        byte[] imageBytes = file.getBytes();
         String fileName = generateUniqueFileName(file.getOriginalFilename());
-        
+        String contentType = file.getContentType() != null ? file.getContentType() : "image/jpeg";
+
         try {
-            String storagePath = String.format("/storage/v1/object/%s/%s", 
-                    supabaseStorageProperties.getBucket(), 
+            String storagePath = "/storage/v1/object/%s/%s".formatted(
+                    supabaseStorageProperties.getBucket(),
                     fileName);
 
             webClient.post()
                     .uri(storagePath)
-                    .header("Content-Type", "image/webp")
-                    .bodyValue(processedImage)
+                    .header("Content-Type", contentType)
+                    .bodyValue(imageBytes)
                     .retrieve()
                     .toBodilessEntity()
                     .onErrorResume(WebClientResponseException.class, e -> {
@@ -74,14 +73,14 @@ public class ImageService {
                     })
                     .block();
 
-            String imageUrl = String.format("%s/storage/v1/object/public/%s/%s",
+            String imageUrl = "%s/storage/v1/object/public/%s/%s".formatted(
                     supabaseStorageProperties.getApi(),
                     supabaseStorageProperties.getBucket(),
                     fileName);
 
             log.info("Imagen subida correctamente a Supabase: {}", imageUrl);
-            
-            return new ImageResponseDTO(fileName, imageUrl, processedImage.length);
+
+            return new ImageResponseDTO(fileName, imageUrl, imageBytes.length);
 
         } catch (Exception e) {
             log.error("Falló la subida a Supabase: {}", e.getMessage(), e);
@@ -89,15 +88,51 @@ public class ImageService {
         }
     }
 
+    private void validateImage(MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            throw new IOException("El archivo está vacío");
+        }
+
+        if (file.getSize() > MAX_FILE_SIZE) {
+            throw new IOException("El archivo excede el tamaño máximo permitido de 10MB");
+        }
+
+        String contentType = file.getContentType();
+        if (contentType == null || !ALLOWED_CONTENT_TYPES.contains(contentType.toLowerCase())) {
+            throw new IOException("Tipo de archivo no permitido. Solo se aceptan imágenes JPEG, PNG, WEBP y GIF");
+        }
+
+        // Validación adicional por extensión
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename != null) {
+            String extension = getFileExtension(originalFilename).toLowerCase();
+            if (!Set.of("jpg", "jpeg", "png", "webp", "gif").contains(extension)) {
+                throw new IOException("Extensión de archivo no válida");
+            }
+        }
+    }
+
+    private String getFileExtension(String filename) {
+        int lastDotIndex = filename.lastIndexOf('.');
+        return lastDotIndex > 0 ? filename.substring(lastDotIndex + 1) : "";
+    }
+
     private String generateUniqueFileName(String originalFilename) {
         String timestamp = String.valueOf(System.currentTimeMillis());
         String uuid = UUID.randomUUID().toString().substring(0, 8);
-        return String.format("%s_%s.webp", timestamp, uuid);
+        String extension = getFileExtension(originalFilename);
+
+        // Si no hay extensión o no es válida, usar jpg por defecto
+        if (extension.isEmpty() || !Set.of("jpg", "jpeg", "png", "webp", "gif").contains(extension.toLowerCase())) {
+            extension = "jpg";
+        }
+
+        return "%s_%s.%s".formatted(timestamp, uuid, extension);
     }
 
     public void deleteImage(String fileName) throws IOException {
         try {
-            String storagePath = String.format("/storage/v1/object/%s/%s",
+            String storagePath = "/storage/v1/object/%s/%s".formatted(
                     supabaseStorageProperties.getBucket(),
                     fileName);
 
