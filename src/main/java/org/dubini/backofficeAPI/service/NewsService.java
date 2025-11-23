@@ -59,12 +59,12 @@ public class NewsService {
         log.debug("Saving news: {}", publicationDTO.getTitle());
 
         validatePublication(publicationDTO);
-
+        System.out.println(publicationDTO.getEditorContent());
         String safeTitle = sanitizeFileName(publicationDTO.getTitle());
 
         try {
             String jsonContent = objectMapper.writeValueAsString(publicationDTO);
-
+            System.out.println(jsonContent);
             // Obtener la fecha de creación si existe, o usar la actual
             LocalDateTime createdAt = newsRepository.findById(safeTitle)
                     .map(News::getCreatedAt)

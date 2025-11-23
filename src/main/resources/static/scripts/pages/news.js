@@ -7,10 +7,10 @@ let news = {};
 let featuredImage = null;
 
 const imageProcessor = new ImageProcessor({
-  maxWidth: 1920,      
-  maxHeight: 1080,   
-  quality: 0.85,       
-  outputFormat: 'image/webp'
+  maxWidth: 1920,
+  maxHeight: 1080,
+  quality: 0.85,
+  outputFormat: "image/webp",
 });
 
 const editorImageUploader = new CustomImageUploader({
@@ -19,8 +19,22 @@ const editorImageUploader = new CustomImageUploader({
   maxWidth: 1920,
   maxHeight: 1080,
   quality: 0.85,
-  outputFormat: 'image/webp'
+  outputFormat: "image/webp",
 });
+
+// Wrapper para arreglar el bug de sanitizeConfig en Embed
+class EmbedFixed extends Embed {
+  static get sanitize() {
+    return {
+      service: false,
+      source: false,
+      embed: false,
+      width: false,
+      height: false,
+      caption: {}
+    };
+  }
+}
 
 function waitForDependencies() {
   return new Promise((resolve) => {
@@ -31,7 +45,6 @@ function waitForDependencies() {
         typeof Quote !== "undefined" &&
         typeof Warning !== "undefined" &&
         typeof Delimiter !== "undefined" &&
-        typeof List !== "undefined" &&
         typeof NestedList !== "undefined" &&
         typeof Checklist !== "undefined" &&
         typeof ImageTool !== "undefined" &&
@@ -84,10 +97,6 @@ async function initEditor(post) {
           inlineToolbar: true,
         },
         delimiter: Delimiter,
-        list: {
-          class: List,
-          inlineToolbar: true,
-        },
         nestedList: {
           class: NestedList,
           inlineToolbar: true,
@@ -113,7 +122,7 @@ async function initEditor(post) {
           class: SimpleImage,
         },
         embed: {
-          class: Embed,
+          class: EmbedFixed,
           config: {
             services: {
               youtube: true,
@@ -171,23 +180,26 @@ async function initEditor(post) {
 
 async function uploadImage(file) {
   const formData = new FormData();
-  
-  try {
 
+  try {
     const originalInfo = await imageProcessor.getImageInfo(file);
-    console.log('Imagen original:', originalInfo);
-    
-    showStatus('Procesando imagen...', 'info');
+    console.log("Imagen original:", originalInfo);
+
+    showStatus("Procesando imagen...", "info");
     const processedBlob = await imageProcessor.processImage(file);
-    
+
     const processedFile = imageProcessor.blobToFile(
       processedBlob,
       `${Date.now()}.webp`
     );
-    
+
     const reduction = ((1 - processedFile.size / file.size) * 100).toFixed(1);
-    console.log(`Imagen procesada: ${(processedFile.size / 1024).toFixed(2)} KB (reducción del ${reduction}%)`);
-    
+    console.log(
+      `Imagen procesada: ${(processedFile.size / 1024).toFixed(
+        2
+      )} KB (reducción del ${reduction}%)`
+    );
+
     formData.append("image", processedFile);
 
     const response = await fetch("/api/images/upload", {
@@ -201,7 +213,7 @@ async function uploadImage(file) {
 
     const data = await response.json();
     if (data.success) {
-      showStatus(`Imagen subida (${reduction}% más pequeña)`, 'success');
+      showStatus(`Imagen subida (${reduction}% más pequeña)`, "success");
       return data.file.url;
     } else {
       throw new Error("Error al procesar la imagen");
@@ -226,14 +238,14 @@ function setupImageUpload() {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
-      showStatus('Por favor selecciona una imagen válida', 'error');
+    if (!file.type.startsWith("image/")) {
+      showStatus("Por favor selecciona una imagen válida", "error");
       return;
     }
 
-    const maxSize = 10 * 1024 * 1024; 
+    const maxSize = 10 * 1024 * 1024;
     if (file.size > maxSize) {
-      showStatus('La imagen es demasiado grande (máx. 10MB)', 'error');
+      showStatus("La imagen es demasiado grande (máx. 10MB)", "error");
       return;
     }
 
@@ -283,7 +295,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const outputData = await editor.save();
         await sendToBackend(outputData);
-
       } catch (error) {
         console.error("Error al guardar:", error);
         showStatus("Error al guardar: " + error.message, "error");
