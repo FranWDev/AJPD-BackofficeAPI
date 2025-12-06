@@ -107,7 +107,12 @@ public class NewsService {
             throw new IllegalArgumentException("El nombre del archivo no puede estar vacío");
         }
 
-        String sanitized = filename.replaceAll(SAFE_FILENAME_PATTERN, "_");
+        String sanitized = filename
+                .toLowerCase()
+                .trim()
+                .replaceAll("\\s+", "-") // Reemplaza espacios por guiones
+                .replaceAll("[^\\w\\-]", "") // Elimina caracteres no alfanuméricos ni guiones
+                .replaceAll("\\-+", "-"); // Colapsa múltiples guiones consecutivos
 
         if (sanitized.length() > 200) {
             sanitized = sanitized.substring(0, 200);
