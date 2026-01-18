@@ -1,17 +1,6 @@
-name: Build and Push Native Image
-
-on:
-  push:
-    branches: 
-      - main
-      - production
-      - development
-  workflow_dispatch:
-
 jobs:
   build-native:
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,15 +11,17 @@ jobs:
           java-version: '17'
           distribution: 'graalvm-community'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          native-image-job-reports: 'true'
-      
+
       - name: Cache Maven packages
         uses: actions/cache@v3
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-          
+
+      # PASO CLAVE: Compilar el binario aquí
+      - name: Build Native Binary
+        run: ./mvnw -Pnative native:compile -DskipTests
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       
@@ -46,11 +37,5 @@ jobs:
           context: .
           file: ./Dockerfile.native-simple
           push: true
-          tags: |
-            ${{ secrets.DOCKER_USERNAME }}/backoffice-native:latest
-            ${{ secrets.DOCKER_USERNAME }}/backoffice-native:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-      
-      - name: Image digest
-        run: echo "Image pushed successfully!"
+          tags: ${{ secrets.DOCKER_USERNAME }}/backoffice-native:latest
+          # Al no tener Stage 1 en Docker, esto será instantáneo
