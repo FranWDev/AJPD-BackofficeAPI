@@ -1,16 +1,16 @@
-# Usamos 'base' (aprox 18MB) en lugar de 'static'
-# Esto proporciona las librerías glibc y libz que tu binario necesita ahora
+# Cambiamos 'static' por 'base', que incluye libz, glibc y certificados SSL
 FROM gcr.io/distroless/base-debian12:latest
 
 WORKDIR /app
 
-# Copiamos el binario comprimido por UPX
+# Copiamos el binario generado por el CI
 COPY target/backofficeAPI /app/backofficeAPI
 
-# Variables para Render
+# Configuración de puerto dinámica para Render
 ENV SERVER_PORT=${PORT}
 ENV TZ=Europe/Madrid
 
+# Usuario sin privilegios por seguridad
 USER 1000:1000
 
 ENTRYPOINT ["/app/backofficeAPI"]
