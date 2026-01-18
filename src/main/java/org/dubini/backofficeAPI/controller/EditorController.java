@@ -18,4 +18,14 @@ public class EditorController {
         return "news";
     }
 
+    @GetMapping("/imagenes-hero")
+    public String heroImages() {
+        return "hero-editor";
+    }
+
+    @GetMapping("/imagenes-slider")
+    public String sliderImages() {
+        return "slider-editor";
+    }
+
 }

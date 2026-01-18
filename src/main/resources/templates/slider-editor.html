@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Asociación Juvenil Proyecto Dubini">
+        <title>Editar Imágenes Slider - Proyecto Dubini</title>
+        <link rel="stylesheet" href="/styles/layout/header.css">
+        <link rel="stylesheet" href="/styles/layout/footer.css">
+        <link rel="stylesheet" href="/styles/base.css">
+        <link rel="stylesheet" href="/styles/slider-editor.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </head>
+    <body>
+        <div th:replace="fragments/header :: header"></div>
+        <main role="main">
+            <h1>🎠 Editor de Imágenes Slider</h1>
+            <div class="slider-editor-container">
+                <div class="slider-cards-grid">
+                    <!-- Slide 1 -->
+                    <div class="slider-card">
+                        <div class="slider-card-header">
+                            <h2>Slide 1</h2>
+                        </div>
+                        <div class="image-preview-container">
+                            <img id="preview-slide1" src="https://mcybqxqlujczgclidnar.supabase.co/storage/v1/object/public/ajpd-storage/slider/slide1.webp" alt="Vista previa de Slide 1" class="slider-preview">
+                            <div class="loading-spinner" id="spinner-slide1" style="display: none;"></div>
+                        </div>
+                        <div class="form-section">
+                            <input 
+                                type="file" 
+                                id="file-slide1" 
+                                accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                                class="file-input"
+                            >
+                            <label for="file-slide1" class="file-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                Seleccionar imagen
+                            </label>
+                            <div id="status-slide1" class="status-message"></div>
+                            <div class="button-group">
+                                <button class="btn btn-primary" id="btn-upload-slide1">
+                                    <i class="fas fa-arrow-up"></i>
+                                    Actualizar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="caption-section">
+                            <label for="caption-slide1" class="caption-label">
+                                <i class="fas fa-align-left"></i>
+                                Pie de texto
+                            </label>
+                            <textarea 
+                                id="caption-slide1" 
+                                class="caption-textarea"
+                                placeholder="Escribe el pie de texto para este slide (máximo 150 caracteres)..."
+                                rows="6"
+                            ></textarea>
+                            <div class="caption-info">
+                                <span id="char-count-slide1" class="char-count">0 / 5000</span>
+                            </div>
+                            <button class="btn btn-secondary" id="btn-caption-slide1">
+                                <i class="fas fa-save"></i>
+                                Guardar pie de texto
+                            </button>
+                            <div id="caption-status-slide1" class="status-message"></div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2 -->
+                    <div class="slider-card">
+                        <div class="slider-card-header">
+                            <h2>Slide 2</h2>
+                        </div>
+                        <div class="image-preview-container">
+                            <img id="preview-slide2" src="https://mcybqxqlujczgclidnar.supabase.co/storage/v1/object/public/ajpd-storage/slider/slide2.webp" alt="Vista previa de Slide 2" class="slider-preview">
+                            <div class="loading-spinner" id="spinner-slide2" style="display: none;"></div>
+                        </div>
+                        <div class="form-section">
+                            <input 
+                                type="file" 
+                                id="file-slide2" 
+                                accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                                class="file-input"
+                            >
+                            <label for="file-slide2" class="file-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                Seleccionar imagen
+                            </label>
+                            <div id="status-slide2" class="status-message"></div>
+                            <div class="button-group">
+                                <button class="btn btn-primary" id="btn-upload-slide2">
+                                    <i class="fas fa-arrow-up"></i>
+                                    Actualizar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="caption-section">
+                            <label for="caption-slide2" class="caption-label">
+                                <i class="fas fa-align-left"></i>
+                                Pie de texto
+                            </label>
+                            <textarea 
+                                id="caption-slide2" 
+                                class="caption-textarea"
+                                placeholder="Escribe el pie de texto para este slide (máximo 150 caracteres)..."
+                                rows="6"
+                            ></textarea>
+                            <div class="caption-info">
+                                <span id="char-count-slide2" class="char-count">0 / 5000</span>
+                            </div>
+                            <button class="btn btn-secondary" id="btn-caption-slide2">
+                                <i class="fas fa-save"></i>
+                                Guardar pie de texto
+                            </button>
+                            <div id="caption-status-slide2" class="status-message"></div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3 -->
+                    <div class="slider-card">
+                        <div class="slider-card-header">
+                            <h2>Slide 3</h2>
+                        </div>
+                        <div class="image-preview-container">
+                            <img id="preview-slide3" src="https://mcybqxqlujczgclidnar.supabase.co/storage/v1/object/public/ajpd-storage/slider/slide3.webp" alt="Vista previa de Slide 3" class="slider-preview">
+                            <div class="loading-spinner" id="spinner-slide3" style="display: none;"></div>
+                        </div>
+                        <div class="form-section">
+                            <input 
+                                type="file" 
+                                id="file-slide3" 
+                                accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                                class="file-input"
+                            >
+                            <label for="file-slide3" class="file-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                Seleccionar imagen
+                            </label>
+                            <div id="status-slide3" class="status-message"></div>
+                            <div class="button-group">
+                                <button class="btn btn-primary" id="btn-upload-slide3">
+                                    <i class="fas fa-arrow-up"></i>
+                                    Actualizar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="caption-section">
+                            <label for="caption-slide3" class="caption-label">
+                                <i class="fas fa-align-left"></i>
+                                Pie de texto
+                            </label>
+                            <textarea 
+                                id="caption-slide3" 
+                                class="caption-textarea"
+                                placeholder="Escribe el pie de texto para este slide (máximo 150 caracteres)..."
+                                rows="6"
+                            ></textarea>
+                            <div class="caption-info">
+                                <span id="char-count-slide3" class="char-count">0 / 5000</span>
+                            </div>
+                            <button class="btn btn-secondary" id="btn-caption-slide3">
+                                <i class="fas fa-save"></i>
+                                Guardar pie de texto
+                            </button>
+                            <div id="caption-status-slide3" class="status-message"></div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 4 -->
+                    <div class="slider-card">
+                        <div class="slider-card-header">
+                            <h2>Slide 4</h2>
+                        </div>
+                        <div class="image-preview-container">
+                            <img id="preview-slide4" src="https://mcybqxqlujczgclidnar.supabase.co/storage/v1/object/public/ajpd-storage/slider/slide4.webp" alt="Vista previa de Slide 4" class="slider-preview">
+                            <div class="loading-spinner" id="spinner-slide4" style="display: none;"></div>
+                        </div>
+                        <div class="form-section">
+                            <input 
+                                type="file" 
+                                id="file-slide4" 
+                                accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                                class="file-input"
+                            >
+                            <label for="file-slide4" class="file-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                Seleccionar imagen
+                            </label>
+                            <div id="status-slide4" class="status-message"></div>
+                            <div class="button-group">
+                                <button class="btn btn-primary" id="btn-upload-slide4">
+                                    <i class="fas fa-arrow-up"></i>
+                                    Actualizar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="caption-section">
+                            <label for="caption-slide4" class="caption-label">
+                                <i class="fas fa-align-left"></i>
+                                Pie de texto
+                            </label>
+                            <textarea 
+                                id="caption-slide4" 
+                                class="caption-textarea"
+                                placeholder="Escribe el pie de texto para este slide (máximo 150 caracteres)..."
+                                rows="6"
+                            ></textarea>
+                            <div class="caption-info">
+                                <span id="char-count-slide4" class="char-count">0 / 5000</span>
+                            </div>
+                            <button class="btn btn-secondary" id="btn-caption-slide4">
+                                <i class="fas fa-save"></i>
+                                Guardar pie de texto
+                            </button>
+                            <div id="caption-status-slide4" class="status-message"></div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 5 -->
+                    <div class="slider-card">
+                        <div class="slider-card-header">
+                            <h2>Slide 5</h2>
+                        </div>
+                        <div class="image-preview-container">
+                            <img id="preview-slide5" src="https://mcybqxqlujczgclidnar.supabase.co/storage/v1/object/public/ajpd-storage/slider/slide5.webp" alt="Vista previa de Slide 5" class="slider-preview">
+                            <div class="loading-spinner" id="spinner-slide5" style="display: none;"></div>
+                        </div>
+                        <div class="form-section">
+                            <input 
+                                type="file" 
+                                id="file-slide5" 
+                                accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                                class="file-input"
+                            >
+                            <label for="file-slide5" class="file-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                Seleccionar imagen
+                            </label>
+                            <div id="status-slide5" class="status-message"></div>
+                            <div class="button-group">
+                                <button class="btn btn-primary" id="btn-upload-slide5">
+                                    <i class="fas fa-arrow-up"></i>
+                                    Actualizar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="caption-section">
+                            <label for="caption-slide5" class="caption-label">
+                                <i class="fas fa-align-left"></i>
+                                Pie de texto
+                            </label>
+                            <textarea 
+                                id="caption-slide5" 
+                                class="caption-textarea"
+                                placeholder="Escribe el pie de texto para este slide (máximo 150 caracteres)..."
+                                rows="6"
+                            ></textarea>
+                            <div class="caption-info">
+                                <span id="char-count-slide5" class="char-count">0 / 5000</span>
+                            </div>
+                            <button class="btn btn-secondary" id="btn-caption-slide5">
+                                <i class="fas fa-save"></i>
+                                Guardar pie de texto
+                            </button>
+                            <div id="caption-status-slide5" class="status-message"></div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 6 -->
+                    <div class="slider-card">
+                        <div class="slider-card-header">
+                            <h2>Slide 6</h2>
+                        </div>
+                        <div class="image-preview-container">
+                            <img id="preview-slide6" src="https://mcybqxqlujczgclidnar.supabase.co/storage/v1/object/public/ajpd-storage/slider/slide6.webp" alt="Vista previa de Slide 6" class="slider-preview">
+                            <div class="loading-spinner" id="spinner-slide6" style="display: none;"></div>
+                        </div>
+                        <div class="form-section">
+                            <input 
+                                type="file" 
+                                id="file-slide6" 
+                                accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                                class="file-input"
+                            >
+                            <label for="file-slide6" class="file-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                Seleccionar imagen
+                            </label>
+                            <div id="status-slide6" class="status-message"></div>
+                            <div class="button-group">
+                                <button class="btn btn-primary" id="btn-upload-slide6">
+                                    <i class="fas fa-arrow-up"></i>
+                                    Actualizar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="caption-section">
+                            <label for="caption-slide6" class="caption-label">
+                                <i class="fas fa-align-left"></i>
+                                Pie de texto
+                            </label>
+                            <textarea 
+                                id="caption-slide6" 
+                                class="caption-textarea"
+                                placeholder="Escribe el pie de texto para este slide (máximo 150 caracteres)..."
+                                rows="6"
+                            ></textarea>
+                            <div class="caption-info">
+                                <span id="char-count-slide6" class="char-count">0 / 5000</span>
+                            </div>
+                            <button class="btn btn-secondary" id="btn-caption-slide6">
+                                <i class="fas fa-save"></i>
+                                Guardar pie de texto
+                            </button>
+                            <div id="caption-status-slide6" class="status-message"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <script src="/scripts/pages/slider-editor.js" type="module"></script>
+    </body>
+</html>
