@@ -29,7 +29,7 @@ jobs:
 
       # PASO CLAVE: Compilar el binario aquí
       - name: Build Native Binary
-        run: ./mvnw -Pnative native:compile -DskipTests
+        run: ./mvnw clean package -Pnative -DskipTests
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
