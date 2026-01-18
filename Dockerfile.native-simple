@@ -1,16 +1,18 @@
-# Cambiamos 'static' por 'base', que incluye libz, glibc y certificados SSL
-FROM gcr.io/distroless/base-debian12:latest
+FROM debian:bookworm-slim
 
 WORKDIR /app
 
-# Copiamos el binario generado por el CI
+# Copiamos tu binario de Arch
 COPY target/backofficeAPI /app/backofficeAPI
 
-# Configuración de puerto dinámica para Render
+# Permisos de ejecución (importante en Debian)
+RUN chmod +x /app/backofficeAPI
+
 ENV SERVER_PORT=${PORT}
 ENV TZ=Europe/Madrid
 
-# Usuario sin privilegios por seguridad
-USER 1000:1000
+# Creamos un usuario para no correr como root
+RUN useradd -m springuser
+USER springuser
 
 ENTRYPOINT ["/app/backofficeAPI"]
