@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Asociación Juvenil Proyecto Dubini">
+        <title>Editar Imágenes Hero - Proyecto Dubini</title>
+        <link rel="stylesheet" href="/styles/layout/header.css">
+        <link rel="stylesheet" href="/styles/layout/footer.css">
+        <link rel="stylesheet" href="/styles/base.css">
+        <link rel="stylesheet" href="/styles/hero-editor.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </head>
+    <body>
+        <div th:replace="fragments/header :: header"></div>
+        <main role="main">
+            <h1>🖼️ Editor de Imágenes Hero</h1>
+            <div class="hero-editor-container">
+                <div class="hero-images-grid">
+                    <!-- Hero 1 -->
+                    <div class="hero-card">
+                        <div class="hero-card-header">
+                            <h2>Hero 1</h2>
+                        </div>
+                        <div class="image-preview-container">
+                            <img id="preview-hero1" src="https://mcybqxqlujczgclidnar.supabase.co/storage/v1/object/public/ajpd-storage/hero/hero1.webp" alt="Vista previa de Hero 1" class="hero-preview">
+                            <div class="loading-spinner" id="spinner-hero1" style="display: none;"></div>
+                        </div>
+                        <div class="form-section">
+                            <input 
+                                type="file" 
+                                id="file-hero1" 
+                                accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                                class="file-input"
+                            >
+                            <label for="file-hero1" class="file-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                Seleccionar imagen
+                            </label>
+                            <div id="status-hero1" class="status-message"></div>
+                            <div class="button-group">
+                                <button class="btn btn-primary" id="btn-upload-hero1">
+                                    <i class="fas fa-arrow-up"></i>
+                                    Actualizar
+                                </button>
+                                <button class="btn btn-secondary" id="btn-reset-hero1">
+                                    <i class="fas fa-undo"></i>
+                                    Restaurar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hero 2 -->
+                    <div class="hero-card">
+                        <div class="hero-card-header">
+                            <h2>Hero 2</h2>
+                        </div>
+                        <div class="image-preview-container">
+                            <img id="preview-hero2" src="https://mcybqxqlujczgclidnar.supabase.co/storage/v1/object/public/ajpd-storage/hero/hero2.webp" alt="Vista previa de Hero 2" class="hero-preview">
+                            <div class="loading-spinner" id="spinner-hero2" style="display: none;"></div>
+                        </div>
+                        <div class="form-section">
+                            <input 
+                                type="file" 
+                                id="file-hero2" 
+                                accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                                class="file-input"
+                            >
+                            <label for="file-hero2" class="file-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                Seleccionar imagen
+                            </label>
+                            <div id="status-hero2" class="status-message"></div>
+                            <div class="button-group">
+                                <button class="btn btn-primary" id="btn-upload-hero2">
+                                    <i class="fas fa-arrow-up"></i>
+                                    Actualizar
+                                </button>
+                                <button class="btn btn-secondary" id="btn-reset-hero2">
+                                    <i class="fas fa-undo"></i>
+                                    Restaurar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hero 3 -->
+                    <div class="hero-card">
+                        <div class="hero-card-header">
+                            <h2>Hero 3</h2>
+                        </div>
+                        <div class="image-preview-container">
+                            <img id="preview-hero3" src="https://mcybqxqlujczgclidnar.supabase.co/storage/v1/object/public/ajpd-storage/hero/hero3.webp" alt="Vista previa de Hero 3" class="hero-preview">
+                            <div class="loading-spinner" id="spinner-hero3" style="display: none;"></div>
+                        </div>
+                        <div class="form-section">
+                            <input 
+                                type="file" 
+                                id="file-hero3" 
+                                accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                                class="file-input"
+                            >
+                            <label for="file-hero3" class="file-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                Seleccionar imagen
+                            </label>
+                            <div id="status-hero3" class="status-message"></div>
+                            <div class="button-group">
+                                <button class="btn btn-primary" id="btn-upload-hero3">
+                                    <i class="fas fa-arrow-up"></i>
+                                    Actualizar
+                                </button>
+                                <button class="btn btn-secondary" id="btn-reset-hero3">
+                                    <i class="fas fa-undo"></i>
+                                    Restaurar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <script src="/scripts/pages/hero-editor.js" type="module"></script>
+    </body>
+</html>

@@ -1,4 +1,4 @@
-const VERSION = "v10.0.2";
+const VERSION = "v11.0.2";
 const CACHE_NAME = `dubini-static-cache-${VERSION}`;
 
 const SHELL_KEY = "Application loading";
@@ -34,6 +34,16 @@ self.addEventListener("fetch", (event) => {
     url.href.startsWith(
       "https://mcybqxqlujczgclidnar.supabase.co/storage/v1/object/public/ajpd-storage/"
     )
+  ) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
+  // No cachear imágenes hero y slider específicamente
+  if (
+    event.request.destination === "image" &&
+    (url.href.includes("/storage/v1/object/public/ajpd-storage/hero/") ||
+     url.href.includes("/storage/v1/object/public/ajpd-storage/slider/"))
   ) {
     event.respondWith(fetch(event.request));
     return;
