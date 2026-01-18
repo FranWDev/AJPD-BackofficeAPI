@@ -3,9 +3,8 @@ name: Build and Push Native Image
 on:
   push:
     branches: 
-      - main
+      - master
       - production
-      - development
   workflow_dispatch:
 
 jobs:
