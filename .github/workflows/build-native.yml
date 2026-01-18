@@ -1,15 +1,14 @@
-name: Build and Push Native Image
+name: Build and Push Ultra-Light Native Image
 
 on:
   push:
-    branches: 
-      - master
-      - production
+    branches: [main, production, development]
   workflow_dispatch:
 
 jobs:
   build-native:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,15 +20,28 @@ jobs:
           distribution: 'graalvm-community'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install Static Libraries and UPX
+        run: |
+          sudo apt-get update
+          # Necesario para el flag --static de GraalVM
+          sudo apt-get install -y zlib1g-dev upx-ucl
+
       - name: Cache Maven packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+          
+      - name: Build Native Binary (Static)
+        # Forzamos la compilación estática vía CLI para no depender solo del pom
+        run: |
+          ./mvnw -Pnative clean package -DskipTests \
+          -Dspring-boot.native.build-args="--static --libc=glibc"
 
-      # PASO CLAVE: Compilar el binario aquí
-      - name: Build Native Binary
-        run: ./mvnw clean package -Pnative -DskipTests
+      - name: Compress Binary with UPX
+        # Esto reduce el peso un 50-60% adicional
+        run: upx --best target/backofficeAPI
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -49,8 +61,3 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/backoffice-native:latest
             ${{ secrets.DOCKER_USERNAME }}/backoffice-native:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-      
-      - name: Image digest
-        run: echo "Image pushed successfully!"

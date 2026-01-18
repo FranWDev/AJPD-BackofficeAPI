@@ -160,6 +160,7 @@
                                 <buildArg>-H:IncludeResources=.*.sql</buildArg>
                                 <buildArg>-H:IncludeResources=.*.xml</buildArg>
                                 <buildArg>-H:IncludeResources=.*.html</buildArg>
+								<buildArg>--static --libc=glibc</buildArg>
                             </buildArgs>
                         </configuration>
                     </plugin>
