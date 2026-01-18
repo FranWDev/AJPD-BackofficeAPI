@@ -193,6 +193,14 @@
                             <goals>
                                 <goal>process-aot</goal>
                             </goals>
+                            <phase>prepare-package</phase>
+                        </execution>
+                        <execution>
+                            <id>repackage</id>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                            <phase>package</phase>
                         </execution>
                     </executions>
                 </plugin>
@@ -238,7 +246,7 @@
     <buildArg>-H:IncludeResources=META-INF/services/.*</buildArg>
     
     <buildArg>-O2</buildArg>
-    <buildArg>-J-Xmx4g</buildArg>
+    <buildArg>-J-Xmx22g</buildArg>
 </buildArgs>
                     </configuration>
                     <executions>

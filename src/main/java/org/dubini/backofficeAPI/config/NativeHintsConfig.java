@@ -27,6 +27,13 @@ public class NativeHintsConfig {
             registerDto(hints, "org.dubini.backofficeAPI.dto.response.HttpResponse");
             registerDto(hints, "org.dubini.backofficeAPI.dto.response.ImageResponseDTO");
             registerDto(hints, "org.dubini.backofficeAPI.dto.response.JwtResponse");
+            
+            // DTOs para Slider Images
+            registerDto(hints, "org.dubini.backofficeAPI.controller.SliderImageController$SliderCaptionRequest");
+            registerDto(hints, "org.dubini.backofficeAPI.controller.SliderImageController$SliderInfoResponse");
+            registerDto(hints, "org.dubini.backofficeAPI.controller.SliderImageController$SliderImageUrlResponse");
+            registerDto(hints, "org.dubini.backofficeAPI.controller.SliderImageController$SliderCaptionResponse");
+            registerDto(hints, "org.dubini.backofficeAPI.controller.SliderImageController$SliderCaptionUpdateResponse");
 
             // ============ EXCEPCIONES ============
             registerException(hints, "org.dubini.backofficeAPI.exception.ImageProcessingException");
@@ -45,12 +52,16 @@ public class NativeHintsConfig {
             registerController(hints, "org.dubini.backofficeAPI.controller.ImageUploadController");
             registerController(hints, "org.dubini.backofficeAPI.controller.NewsController");
             registerController(hints, "org.dubini.backofficeAPI.controller.PageController");
+            registerController(hints, "org.dubini.backofficeAPI.controller.HeroImageController");
+            registerController(hints, "org.dubini.backofficeAPI.controller.SliderImageController");
 
             // ============ SERVICIOS ============
             registerService(hints, "org.dubini.backofficeAPI.service.AuthService");
             registerService(hints, "org.dubini.backofficeAPI.service.CacheInvalidatorService");
             registerService(hints, "org.dubini.backofficeAPI.service.ImageService");
             registerService(hints, "org.dubini.backofficeAPI.service.NewsService");
+            registerService(hints, "org.dubini.backofficeAPI.service.HeroImageService");
+            registerService(hints, "org.dubini.backofficeAPI.service.SliderImageService");
 
             // ============ REPOSITORIES ============
             registerRepository(hints, "org.dubini.backofficeAPI.repository.NewsRepository");
