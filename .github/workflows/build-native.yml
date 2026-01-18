@@ -43,7 +43,7 @@ jobs:
 
       - name: Compress Binary with UPX
         # Esto reduce el binario de ~80MB a ~30MB sin romper nada
-        run: upx --best target/backofficeAPI
+        run: upx target/backofficeAPI
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
