@@ -1,3 +1,12 @@
+name: Build and Push Native Image
+
+on:
+  push:
+    branches: 
+      - master
+      - production
+  workflow_dispatch:
+
 jobs:
   build-native:
     runs-on: ubuntu-latest
@@ -37,5 +46,11 @@ jobs:
           context: .
           file: ./Dockerfile.native-simple
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/backoffice-native:latest
-          # Al no tener Stage 1 en Docker, esto será instantáneo
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/backoffice-native:latest
+            ${{ secrets.DOCKER_USERNAME }}/backoffice-native:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      
+      - name: Image digest
+        run: echo "Image pushed successfully!"
