@@ -1,4 +1,4 @@
-name: Build and Push Ultra-Light Native Image
+name: Build and Push Native Image
 
 on:
   push:
@@ -20,11 +20,11 @@ jobs:
           distribution: 'graalvm-community'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install Static Libraries and UPX
+      - name: Install UPX
+        # Solo instalamos UPX para comprimir el resultado final
         run: |
           sudo apt-get update
-          # libc6-dev es IMPRESCINDIBLE para el enlace estático de glibc
-          sudo apt-get install -y zlib1g-dev libc6-dev upx-ucl
+          sudo apt-get install -y upx-ucl
 
       - name: Cache Maven packages
         uses: actions/cache@v4
@@ -33,15 +33,16 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
           
-      - name: Build Native Binary (Static)
-        # Usamos clean package para evitar la doble compilación de native:compile
+      - name: Build Native Binary
+        # CAMBIO: Quitamos --static y --libc=glibc para evitar el error de __xmknod
+        # Añadimos -J-Xmx6g para proteger la RAM del runner
         run: |
           chmod +x mvnw
           ./mvnw -Pnative clean package -DskipTests \
-          -Dspring-boot.native.build-args="--static --libc=glibc"
+          -Dspring-boot.native.build-args="-O2 -J-Xmx6g"
 
       - name: Compress Binary with UPX
-        # Comprimimos el binario antes de enviarlo al contexto de Docker
+        # Esto reduce el binario de ~80MB a ~30MB sin romper nada
         run: upx --best target/backofficeAPI
 
       - name: Set up Docker Buildx
@@ -62,6 +63,5 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/backoffice-native:latest
             ${{ secrets.DOCKER_USERNAME }}/backoffice-native:${{ github.sha }}
-          # Usamos caché de GitHub Actions para Docker para que las capas se suban rápido
           cache-from: type=gha
           cache-to: type=gha,mode=max
