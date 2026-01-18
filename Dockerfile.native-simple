@@ -1,17 +1,13 @@
-# Usamos 'static' que es la imagen más pequeña posible después de 'scratch'
-# Pesa solo ~2MB y contiene certificados SSL básicos (necesarios para conectar con DBs)
+# Pesa solo ~2MB y tiene certificados para conectar a la DB
 FROM gcr.io/distroless/static-debian12
 
 WORKDIR /app
-
-# Copiamos el binario (asumimos que GitHub Actions ya lo compiló y comprimió)
 COPY target/backofficeAPI /app/backofficeAPI
 
-# Configuración para Render
+# Puerto dinámico de Render
 ENV SERVER_PORT=${PORT}
 ENV TZ=Europe/Madrid
 
-# Usuario sin privilegios por seguridad
 USER 1000:1000
 
 ENTRYPOINT ["/app/backofficeAPI"]

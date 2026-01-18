@@ -23,8 +23,8 @@ jobs:
       - name: Install Static Libraries and UPX
         run: |
           sudo apt-get update
-          # Necesario para el flag --static de GraalVM
-          sudo apt-get install -y zlib1g-dev upx-ucl
+          # libc6-dev es IMPRESCINDIBLE para el enlace estático de glibc
+          sudo apt-get install -y zlib1g-dev libc6-dev upx-ucl
 
       - name: Cache Maven packages
         uses: actions/cache@v4
@@ -34,13 +34,14 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
           
       - name: Build Native Binary (Static)
-        # Forzamos la compilación estática vía CLI para no depender solo del pom
+        # Usamos clean package para evitar la doble compilación de native:compile
         run: |
+          chmod +x mvnw
           ./mvnw -Pnative clean package -DskipTests \
           -Dspring-boot.native.build-args="--static --libc=glibc"
 
       - name: Compress Binary with UPX
-        # Esto reduce el peso un 50-60% adicional
+        # Comprimimos el binario antes de enviarlo al contexto de Docker
         run: upx --best target/backofficeAPI
 
       - name: Set up Docker Buildx
@@ -61,3 +62,6 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/backoffice-native:latest
             ${{ secrets.DOCKER_USERNAME }}/backoffice-native:${{ github.sha }}
+          # Usamos caché de GitHub Actions para Docker para que las capas se suban rápido
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
