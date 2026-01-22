@@ -1,4 +1,4 @@
-const VERSION = "v11.2.2";
+const VERSION = "v11.3.2";
 const CACHE_NAME = `dubini-static-cache-${VERSION}`;
 
 const SHELL_KEY = "Application loading";
