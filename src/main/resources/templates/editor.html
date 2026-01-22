@@ -45,13 +45,28 @@
   </body>
   <script src="/scripts/script.js"></script>
   <script type="module" src="/scripts/pages/editor.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').then(registration => {
-        console.log('Service Worker registrado:', registration);
-      }).catch(error => {
-        console.error('Error registrando Service Worker:', error);
-      });
-    }
-  </script>
+        <script>
+            // Registrar Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js').then(registration => {
+                    console.log('Service Worker registrado:', registration);
+                }).catch(error => {
+                    console.error('Error registrando Service Worker:', error);
+                });
+            }
+
+            // Debug PWA Installation
+            window.addEventListener('beforeinstallprompt', (e) => {
+                console.log('beforeinstallprompt event fired');
+                e.preventDefault();
+                let deferredPrompt = e;
+                
+                // Mostrar UI de instalación aquí si quieres
+                // O simplemente dejar que el navegador maneje
+            });
+
+            window.addEventListener('appinstalled', () => {
+                console.log('PWA instalada correctamente');
+            });
+        </script>
 </html>

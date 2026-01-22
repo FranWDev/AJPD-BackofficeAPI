@@ -8,6 +8,23 @@ document.addEventListener("DOMContentLoaded", function () {
   const errorTitle = document.getElementById("errorTitle");
   const errorText = document.getElementById("errorText");
 
+  // Verificar si ya hay un token JWT válido (ej: cuando se abre la PWA)
+  function checkExistingAuth() {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+      const [name, value] = cookie.trim().split('=');
+      if (name === 'jwt' && value) {
+        // Si hay un token JWT, redirigir a editor
+        console.log('JWT válido encontrado, redirigiendo a editor...');
+        window.location.href = "/editor";
+        return;
+      }
+    }
+  }
+
+  // Verificar autenticación al cargar la página
+  checkExistingAuth();
+
   passwordInput.addEventListener("input", function () {
     errorMessage.style.display = "none";
   });

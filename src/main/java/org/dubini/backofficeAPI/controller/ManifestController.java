@@ -24,14 +24,15 @@ public class ManifestController {
         String manifest = """
                 {
                   "name": "Proyecto Dubini Backoffice",
-                  "short_name": "Dubini",
+                  "short_name": "Dubini Backoffice",
                   "description": "Backoffice de la Asociación Juvenil Proyecto Dubini",
-                  "start_url": "/editor",
+                  "start_url": "/login",
                   "scope": "/",
                   "display": "standalone",
                   "orientation": "portrait-primary",
                   "theme_color": "#1e88e5",
                   "background_color": "#ffffff",
+                  "prefer_related_applications": false,
                   "categories": ["business", "productivity"],
                   "icons": [
                     {
@@ -57,34 +58,6 @@ public class ManifestController {
                       "sizes": "512x512",
                       "type": "image/png",
                       "purpose": "maskable"
-                    }
-                  ],
-                  "screenshots": [
-                    {
-                      "src": "/assets/logo.png",
-                      "sizes": "540x720",
-                      "type": "image/png",
-                      "form_factor": "narrow"
-                    },
-                    {
-                      "src": "/assets/logo.png",
-                      "sizes": "1280x720",
-                      "type": "image/png",
-                      "form_factor": "wide"
-                    }
-                  ],
-                  "shortcuts": [
-                    {
-                      "name": "Dubini backoffice",
-                      "short_name": "Dubini backoffice",
-                      "description": "Accede al editor del backoffice",
-                      "url": "/editor",
-                      "icons": [
-                        {
-                          "src": "/assets/logo.png",
-                          "sizes": "192x192"
-                        }
-                      ]
                     }
                   ]
                 }

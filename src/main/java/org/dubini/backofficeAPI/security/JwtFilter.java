@@ -22,7 +22,8 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
 
     private boolean isPublicUrl(String path) {
-        if (path.equals("/") || path.equals("/login")) {
+        if (path.equals("/") || path.equals("/login") || 
+            path.equals("/manifest.json") || path.equals("/sw.js")) {
             return true;
         }
 
