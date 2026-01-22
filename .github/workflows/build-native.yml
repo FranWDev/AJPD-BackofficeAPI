@@ -2,14 +2,13 @@ name: Build and Push Native Image
 
 on:
   push:
-    branches: 
-      - master
-      - production
+    branches: [main, production, development]
   workflow_dispatch:
 
 jobs:
   build-native:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,15 +20,30 @@ jobs:
           distribution: 'graalvm-community'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install UPX
+        # Solo instalamos UPX para comprimir el resultado final
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y upx-ucl
+
       - name: Cache Maven packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-
-      # PASO CLAVE: Compilar el binario aquí
+          restore-keys: ${{ runner.os }}-m2
+          
       - name: Build Native Binary
-        run: ./mvnw -Pnative native:compile -DskipTests
+        # CAMBIO: Quitamos --static y --libc=glibc para evitar el error de __xmknod
+        # Añadimos -J-Xmx6g para proteger la RAM del runner
+        run: |
+          chmod +x mvnw
+          ./mvnw -Pnative clean package -DskipTests \
+          -Dspring-boot.native.build-args="-O2 -J-Xmx6g"
+
+      - name: Compress Binary with UPX
+        # Esto reduce el binario de ~80MB a ~30MB sin romper nada
+        run: upx target/backofficeAPI
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -51,6 +65,3 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/backoffice-native:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      
-      - name: Image digest
-        run: echo "Image pushed successfully!"

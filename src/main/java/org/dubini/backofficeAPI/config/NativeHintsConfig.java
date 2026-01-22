@@ -50,6 +50,7 @@ public class NativeHintsConfig {
             registerController(hints, "org.dubini.backofficeAPI.controller.CacheInvalidatorController");
             registerController(hints, "org.dubini.backofficeAPI.controller.EditorController");
             registerController(hints, "org.dubini.backofficeAPI.controller.ImageUploadController");
+            registerController(hints, "org.dubini.backofficeAPI.controller.ManifestController");
             registerController(hints, "org.dubini.backofficeAPI.controller.NewsController");
             registerController(hints, "org.dubini.backofficeAPI.controller.PageController");
             registerController(hints, "org.dubini.backofficeAPI.controller.HeroImageController");

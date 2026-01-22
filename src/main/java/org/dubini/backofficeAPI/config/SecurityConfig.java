@@ -41,7 +41,7 @@ public class SecurityConfig {
                     System.out.println("- All other requests: AUTHENTICATED");
 
                     auth
-                            .requestMatchers("/", "/login", "/error").permitAll()
+                            .requestMatchers("/", "/login", "/error", "/manifest.json", "/sw.js").permitAll()
 
                             .requestMatchers("/styles/**", "/scripts/**", "/assets/**",
                                     "/images/**", "/img/**", "/favicon.ico",

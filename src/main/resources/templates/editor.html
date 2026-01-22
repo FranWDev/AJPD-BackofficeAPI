@@ -7,6 +7,13 @@
       name="description"
       content="Asociación Juvenil Proyecto Dubini"
     />
+    <meta name="theme-color" content="#1e88e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Dubini">
+    <link rel="apple-touch-icon" href="/assets/logo.png">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="manifest" href="/manifest.json">
     <title>Dubini backoffice</title>
 
     <link rel="stylesheet" href="/styles/layout/header.css" />
@@ -38,4 +45,13 @@
   </body>
   <script src="/scripts/script.js"></script>
   <script type="module" src="/scripts/pages/editor.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then(registration => {
+        console.log('Service Worker registrado:', registration);
+      }).catch(error => {
+        console.error('Error registrando Service Worker:', error);
+      });
+    }
+  </script>
 </html>

@@ -4,6 +4,13 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Asociación Juvenil Proyecto Dubini">
+        <meta name="theme-color" content="#1e88e5">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="Dubini">
+        <link rel="apple-touch-icon" href="/assets/logo.png">
+        <link rel="icon" type="image/x-icon" href="/favicon.ico">
+        <link rel="manifest" href="/manifest.json">
         <title>Proyecto Dubini</title>
         <link rel="stylesheet" href="/styles/layout/header.css">
         <link rel="stylesheet" href="/styles/layout/footer.css">
@@ -14,7 +21,7 @@
     <body>
         <div th:replace="fragments/header :: header"></div>
         <main role="main">
-            <h1>📝 Editor de noticias y activididades</h1>
+            <h1>Editor de noticias y activididades</h1>
             <div class="main-layout">
                 <div id="all-news"></div>
                 <div class="editor-section">
@@ -72,4 +79,13 @@
             <script src="/scripts/pages/news.js" type="module"></script>
         </main>
     </body>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').then(registration => {
+                console.log('Service Worker registrado:', registration);
+            }).catch(error => {
+                console.error('Error registrando Service Worker:', error);
+            });
+        }
+    </script>
 </html>
