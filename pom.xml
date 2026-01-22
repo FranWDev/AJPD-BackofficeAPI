@@ -13,7 +13,7 @@
     
     <groupId>org.dubini</groupId>
     <artifactId>backofficeAPI</artifactId>
-    <version>1.0-RELEASE</version>
+    <version>1.5-RELEASE</version>
     <name>backofficeAPI</name>
     <description>Backoffice API</description>
     
